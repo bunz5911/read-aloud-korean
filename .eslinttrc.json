@@ -1,0 +1,10 @@
+
+Failed to compile.
+
+./app/layout.tsx
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./app/page.tsx
+3:1  Error: Parsing error: The keyword 'import' is reserved
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/app/api-reference/config/eslint#disabling-rules

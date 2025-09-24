@@ -1,0 +1,62 @@
+/* app/globals.css — Tailwind v4 */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* --- 여기에 우리 UI에서 쓰는 헬퍼/애니메이션 유지 --- */
+html, body { height: 100%; }
+body { color: #0f2a4d; }
+
+/* 모바일 최적화 */
+* {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* 텍스트 선택 허용 (읽기 전용 영역) */
+p, span, div[contenteditable] {
+  -webkit-user-select: text;
+  -khtml-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
+/* 터치 최적화 */
+button, input, select, textarea {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  touch-action: manipulation;
+}
+
+/* iOS Safari에서 스크롤 바운스 방지 */
+body {
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* line-clamp helper */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* animations */
+@keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+.animate-fadeIn { animation: fadeIn 0.5s ease-out; }
+
+@keyframes float { 0%,100%{transform:translateY(0) rotate(0)} 50%{transform:translateY(-20px) rotate(10deg)} }
+@keyframes float-delayed { 0%,100%{transform:translateY(0) rotate(0)} 50%{transform:translateY(-15px) rotate(-10deg)} }
+@keyframes float-slow { 0%,100%{transform:translateY(0) rotate(0)} 50%{transform:translateY(-10px) rotate(5deg)} }
+
+.animate-float{animation:float 6s ease-in-out infinite}
+.animate-float-delayed{animation:float-delayed 8s ease-in-out infinite;animation-delay:2s}
+.animate-float-slow{animation:float-slow 10s ease-in-out infinite;animation-delay:4s}
