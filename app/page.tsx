@@ -257,12 +257,12 @@ export default function Page() {
         setMicState('denied');
         if (isMobile) {
           if (isIOS) {
-            alert('마이크 권한이 거부되었습니다.\n\niOS 해결 방법:\n1. Safari 설정 > 개인정보 보호 및 보안 > 마이크\n2. 또는 설정 > Safari > 웹사이트 설정 > 마이크\n3. 이 사이트를 허용으로 변경');
+            alert('🎤 마이크 권한이 거부되었습니다\n\n📱 iPhone/iPad 해결 방법:\n\n1️⃣ 설정 앱 열기\n2️⃣ Safari 선택\n3️⃣ 웹사이트 설정 → 마이크\n4️⃣ 이 사이트를 "허용"으로 변경\n5️⃣ Safari로 돌아가서 페이지 새로고침\n\n💡 팁: 권한 설정 후에도 문제가 있다면 Safari를 완전히 종료하고 다시 열어보세요');
           } else if (isAndroid) {
-            alert('마이크 권한이 거부되었습니다.\n\nAndroid 해결 방법:\n1. Chrome 메뉴 > 설정 > 사이트 설정 > 마이크\n2. 또는 Chrome 주소창의 자물쇠 아이콘 클릭\n3. 마이크 권한을 허용으로 변경');
+            alert('🎤 마이크 권한이 거부되었습니다\n\n🤖 Android 해결 방법:\n\n1️⃣ Chrome 주소창의 🔒 자물쇠 아이콘 클릭\n2️⃣ 마이크를 "허용"으로 변경\n3️⃣ 또는 Chrome 메뉴 → 설정 → 사이트 설정 → 마이크\n4️⃣ 페이지 새로고침 후 다시 시도\n\n💡 팁: 권한 설정 후에도 문제가 있다면 Chrome을 완전히 종료하고 다시 열어보세요');
           }
         } else {
-          alert('마이크 권한이 거부되었습니다.\n\n해결 방법:\n1. 브라우저 주소창 왼쪽의 자물쇠 아이콘 클릭\n2. 마이크 권한을 "허용"으로 변경\n3. 또는 시스템 환경설정 > 보안 및 개인 정보 보호 > 마이크에서 Chrome 허용');
+          alert('🎤 마이크 권한이 거부되었습니다\n\n💻 PC 해결 방법:\n\n1️⃣ 브라우저 주소창 왼쪽의 🔒 자물쇠 아이콘 클릭\n2️⃣ 마이크 권한을 "허용"으로 변경\n3️⃣ 또는 시스템 환경설정 > 보안 및 개인 정보 보호 > 마이크에서 Chrome 허용\n4️⃣ 페이지 새로고침 후 다시 시도');
         }
       } else if (err?.name === 'NotFoundError') {
         setMicState('blocked');
@@ -553,20 +553,33 @@ const handleSpeak = async () => {
                   <motion.div 
                     initial={{ opacity: 0, y: 10 }} 
                     animate={{ opacity: 1, y: 0 }} 
-                    className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 max-w-md text-center"
+                    className="bg-gradient-to-br from-orange-50 to-red-50 border-2 border-orange-300 rounded-xl p-6 max-w-lg text-center shadow-lg"
                   >
-                    <p className="text-sm text-yellow-800 font-medium mb-2">마이크 권한이 필요해요</p>
-                    <div className="text-xs text-yellow-700 space-y-1">
+                    <div className="mb-4">
+                      <div className="text-4xl mb-2">🎤</div>
+                      <p className="text-lg font-bold text-orange-800 mb-1">마이크 권한이 필요해요</p>
+                      <p className="text-sm text-orange-600">아래 단계를 따라 권한을 허용해주세요</p>
+                    </div>
+                    
+                    <div className="text-sm text-orange-700 space-y-3 text-left">
                       {(() => {
                         // 서버 사이드 렌더링에서 navigator 접근 방지
                         if (typeof window === 'undefined') {
                           return (
-                            <>
-                              <p>• 브라우저 주소창의 🔒 아이콘 클릭</p>
-                              <p>• 마이크 권한을 &quot;허용&quot;으로 변경</p>
-                              <p>• 또는 시스템 환경설정 &gt; 보안 및 개인 정보 보호 &gt; 마이크</p>
-                              <p>• Chrome 체크박스 활성화 후 페이지 새로고침</p>
-                            </>
+                            <div className="space-y-2">
+                              <div className="flex items-start space-x-2">
+                                <span className="bg-orange-200 text-orange-800 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">1</span>
+                                <p>브라우저 주소창의 <span className="font-semibold">🔒 자물쇠 아이콘</span> 클릭</p>
+                              </div>
+                              <div className="flex items-start space-x-2">
+                                <span className="bg-orange-200 text-orange-800 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">2</span>
+                                <p>마이크 권한을 <span className="font-semibold text-green-600">&quot;허용&quot;</span>으로 변경</p>
+                              </div>
+                              <div className="flex items-start space-x-2">
+                                <span className="bg-orange-200 text-orange-800 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">3</span>
+                                <p>페이지 새로고침 후 다시 시도</p>
+                              </div>
+                            </div>
                           );
                         }
                         
@@ -577,31 +590,101 @@ const handleSpeak = async () => {
                         if (isMobile) {
                           if (isIOS) {
                             return (
-                              <>
-                                <p>• Safari 설정 &gt; 개인정보 보호 및 보안 &gt; 마이크</p>
-                                <p>• 또는 설정 &gt; Safari &gt; 웹사이트 설정 &gt; 마이크</p>
-                                <p>• 이 사이트를 허용으로 변경</p>
-                              </>
+                              <div className="space-y-2">
+                                <div className="text-center mb-3">
+                                  <p className="font-semibold text-orange-800">📱 iPhone/iPad 사용자</p>
+                                </div>
+                                <div className="flex items-start space-x-2">
+                                  <span className="bg-orange-200 text-orange-800 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">1</span>
+                                  <p><span className="font-semibold">설정</span> 앱 열기</p>
+                                </div>
+                                <div className="flex items-start space-x-2">
+                                  <span className="bg-orange-200 text-orange-800 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">2</span>
+                                  <p><span className="font-semibold">Safari</span> 선택</p>
+                                </div>
+                                <div className="flex items-start space-x-2">
+                                  <span className="bg-orange-200 text-orange-800 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">3</span>
+                                  <p><span className="font-semibold">웹사이트 설정</span> → <span className="font-semibold">마이크</span></p>
+                                </div>
+                                <div className="flex items-start space-x-2">
+                                  <span className="bg-orange-200 text-orange-800 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">4</span>
+                                  <p>이 사이트를 <span className="font-semibold text-green-600">허용</span>으로 변경</p>
+                                </div>
+                                <div className="flex items-start space-x-2">
+                                  <span className="bg-orange-200 text-orange-800 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">5</span>
+                                  <p>Safari로 돌아가서 페이지 새로고침</p>
+                                </div>
+                              </div>
                             );
                           } else if (isAndroid) {
                             return (
-                              <>
-                                <p>• Chrome 메뉴 &gt; 설정 &gt; 사이트 설정 &gt; 마이크</p>
-                                <p>• 또는 주소창의 🔒 아이콘 클릭</p>
-                                <p>• 마이크 권한을 허용으로 변경</p>
-                              </>
+                              <div className="space-y-2">
+                                <div className="text-center mb-3">
+                                  <p className="font-semibold text-orange-800">🤖 Android 사용자</p>
+                                </div>
+                                <div className="flex items-start space-x-2">
+                                  <span className="bg-orange-200 text-orange-800 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">1</span>
+                                  <p>Chrome 주소창의 <span className="font-semibold">🔒 자물쇠 아이콘</span> 클릭</p>
+                                </div>
+                                <div className="flex items-start space-x-2">
+                                  <span className="bg-orange-200 text-orange-800 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">2</span>
+                                  <p>마이크를 <span className="font-semibold text-green-600">허용</span>으로 변경</p>
+                                </div>
+                                <div className="flex items-start space-x-2">
+                                  <span className="bg-orange-200 text-orange-800 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">3</span>
+                                  <p>또는 Chrome 메뉴 → <span className="font-semibold">설정</span> → <span className="font-semibold">사이트 설정</span> → <span className="font-semibold">마이크</span></p>
+                                </div>
+                                <div className="flex items-start space-x-2">
+                                  <span className="bg-orange-200 text-orange-800 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">4</span>
+                                  <p>페이지 새로고침 후 다시 시도</p>
+                                </div>
+                              </div>
                             );
                           }
                         }
                         return (
-                          <>
-                            <p>• 브라우저 주소창의 🔒 아이콘 클릭</p>
-                            <p>• 마이크 권한을 &quot;허용&quot;으로 변경</p>
-                            <p>• 또는 시스템 환경설정 &gt; 보안 및 개인 정보 보호 &gt; 마이크</p>
-                            <p>• Chrome 체크박스 활성화 후 페이지 새로고침</p>
-                          </>
+                          <div className="space-y-2">
+                            <div className="flex items-start space-x-2">
+                              <span className="bg-orange-200 text-orange-800 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">1</span>
+                              <p>브라우저 주소창의 <span className="font-semibold">🔒 자물쇠 아이콘</span> 클릭</p>
+                            </div>
+                            <div className="flex items-start space-x-2">
+                              <span className="bg-orange-200 text-orange-800 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">2</span>
+                              <p>마이크 권한을 <span className="font-semibold text-green-600">&quot;허용&quot;</span>으로 변경</p>
+                            </div>
+                            <div className="flex items-start space-x-2">
+                              <span className="bg-orange-200 text-orange-800 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">3</span>
+                              <p>페이지 새로고침 후 다시 시도</p>
+                            </div>
+                          </div>
                         );
                       })()}
+                    </div>
+                    
+                    <div className="mt-4 pt-3 border-t border-orange-200">
+                      <p className="text-xs text-orange-600 mb-3">
+                        💡 <strong>팁:</strong> 권한 설정 후에도 문제가 있다면 브라우저를 완전히 종료하고 다시 열어보세요
+                      </p>
+                      <button 
+                        onClick={() => {
+                          const isMobile = typeof window !== 'undefined' ? /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) : false;
+                          const isIOS = typeof window !== 'undefined' ? /iPad|iPhone|iPod/.test(navigator.userAgent) : false;
+                          const isAndroid = typeof window !== 'undefined' ? /Android/.test(navigator.userAgent) : false;
+                          
+                          if (isMobile) {
+                            if (isIOS) {
+                              alert('📱 iPhone/iPad 상세 가이드:\n\n1️⃣ iPhone/iPad의 "설정" 앱을 열어주세요\n2️⃣ "Safari"를 찾아서 탭하세요\n3️⃣ "웹사이트 설정"을 선택하세요\n4️⃣ "마이크"를 선택하세요\n5️⃣ 이 웹사이트를 "허용"으로 변경하세요\n6️⃣ Safari로 돌아가서 페이지를 새로고침하세요\n\n💡 여전히 안 된다면 Safari를 완전히 종료하고 다시 열어보세요');
+                            } else if (isAndroid) {
+                              alert('🤖 Android 상세 가이드:\n\n1️⃣ Chrome 주소창 왼쪽의 🔒 자물쇠 아이콘을 탭하세요\n2️⃣ "마이크" 항목을 찾아서 "허용"으로 변경하세요\n3️⃣ 또는 Chrome 메뉴(⋮) → 설정 → 사이트 설정 → 마이크\n4️⃣ 이 사이트를 "허용"으로 설정하세요\n5️⃣ 페이지를 새로고침하세요\n\n💡 여전히 안 된다면 Chrome을 완전히 종료하고 다시 열어보세요');
+                            }
+                          } else {
+                            alert('💻 PC 상세 가이드:\n\n1️⃣ 브라우저 주소창 왼쪽의 🔒 자물쇠 아이콘을 클릭하세요\n2️⃣ "마이크" 항목을 찾아서 "허용"으로 변경하세요\n3️⃣ 또는 시스템 환경설정 → 보안 및 개인 정보 보호 → 마이크에서 Chrome 허용\n4️⃣ 페이지를 새로고침하세요\n\n💡 여전히 안 된다면 브라우저를 완전히 종료하고 다시 열어보세요');
+                          }
+                        }}
+                        className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200"
+                      >
+                        📖 상세 가이드 보기
+                      </button>
                     </div>
                   </motion.div>
                 )}
