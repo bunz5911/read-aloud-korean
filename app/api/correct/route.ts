@@ -221,7 +221,13 @@ async function callOpenAI(prompt: string): Promise<string> {
 /* ---------- POST ---------- */
 export async function POST(req: NextRequest) {
   try {
+    console.log('=== API 호출 시작 ===');
+    console.log('OPENAI_API_KEY 존재:', !!OPENAI_API_KEY);
+    console.log('OPENAI_API_KEY 길이:', OPENAI_API_KEY?.length);
+    console.log('OPENAI_API_KEY 시작:', OPENAI_API_KEY?.substring(0, 10));
+    
     if (!OPENAI_API_KEY) {
+      console.error('❌ OPENAI_API_KEY가 없습니다!');
       return NextResponse.json({ error: 'Missing OPENAI_API_KEY' }, { status: 500 });
     }
 
@@ -265,16 +271,22 @@ export async function POST(req: NextRequest) {
     cache.set(key, { value: payload, expires: now + CACHE_TTL_MS });
     return NextResponse.json({ ...payload, cached: false });
   } catch (e: any) {
-    console.error('교정 API 오류:', e);
+    console.error('=== 교정 API 오류 ===');
+    console.error('에러 타입:', typeof e);
+    console.error('에러 메시지:', e?.message);
+    console.error('에러 스택:', e?.stack);
+    console.error('전체 에러 객체:', e);
     
     // OpenAI 할당량 초과 오류 처리
     if (e?.message?.includes('quota') || e?.message?.includes('insufficient_quota')) {
+      console.error('❌ 할당량 초과 에러');
       return NextResponse.json({ 
         error: 'OpenAI API 할당량이 초과되었습니다. 잠시 후 다시 시도해주세요.',
         type: 'quota_exceeded'
       }, { status: 429 });
     }
     
+    console.error('❌ 일반 에러:', e?.message || 'Unknown error');
     return NextResponse.json({ error: e?.message || 'Unknown error' }, { status: 500 });
   }
 }
