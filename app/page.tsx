@@ -514,8 +514,52 @@ const handleSpeak = async () => {
               />
             </svg>
             <div className="absolute inset-0 flex items-center justify-center">
-              <motion.div className="relative" animate={isRecording ? { scale: [1, 1.3, 1.1, 1.3, 1], rotate: [0, -5, 5, -3, 0] } : {}} transition={{ duration: 2, repeat: isRecording ? Infinity : 0 }}>
-                <Mic className="relative w-14 h-14 text-white drop-shadow-lg" strokeWidth={2.5} />
+              <motion.div 
+                className="relative cursor-pointer" 
+                animate={isRecording ? { scale: [1, 1.3, 1.1, 1.3, 1], rotate: [0, -5, 5, -3, 0] } : {}} 
+                transition={{ duration: 2, repeat: isRecording ? Infinity : 0 }}
+                onClick={(e) => {
+                  // 마이크가 차단되거나 거부된 상태에서는 클릭 무시
+                  if (micState === 'denied' || micState === 'blocked') {
+                    e.preventDefault();
+                    return;
+                  }
+                  handleStartRecording();
+                }}
+                onTouchStart={(e) => {
+                  // 마이크가 차단되거나 거부된 상태에서는 터치 피드백 없음
+                  if (micState === 'denied' || micState === 'blocked') {
+                    return;
+                  }
+                  // 모바일에서 터치 피드백 개선
+                  e.currentTarget.style.transform = 'scale(0.95)';
+                }}
+                onTouchEnd={(e) => {
+                  // 마이크가 차단되거나 거부된 상태에서는 터치 피드백 없음
+                  if (micState === 'denied' || micState === 'blocked') {
+                    return;
+                  }
+                  e.currentTarget.style.transform = '';
+                }}
+                style={{ WebkitTapHighlightColor: 'transparent' }}
+                title="마이크를 클릭하여 녹음 시작"
+              >
+                <Mic 
+                  className={`relative w-14 h-14 text-white drop-shadow-lg transition-all duration-200 ${
+                    micState === 'denied' || micState === 'blocked' 
+                      ? 'opacity-50 cursor-not-allowed' 
+                      : 'hover:scale-110 active:scale-95'
+                  }`} 
+                  strokeWidth={2.5} 
+                />
+                {/* 클릭 가능하다는 것을 나타내는 시각적 힌트 */}
+                {!isRecording && micState !== 'denied' && micState !== 'blocked' && (
+                  <motion.div
+                    className="absolute inset-0 rounded-full border-2 border-white/30"
+                    animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.6, 0.3] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  />
+                )}
               </motion.div>
             </div>
           </motion.div>
@@ -523,6 +567,9 @@ const handleSpeak = async () => {
           <motion.div className="flex flex-col items-center space-y-3" animate={isRecording ? { y: [0, -5, 0] } : {}} transition={{ duration: 2, repeat: isRecording ? Infinity : 0 }}>
             <div className="text-center">
               <span className="text-xl font-semibold">{isRecording ? '🎤 Recording...' : 'Ready to record'}</span>
+              {!isRecording && micState !== 'denied' && micState !== 'blocked' && (
+                <p className="text-sm text-gray-600 mt-1">마이크 아이콘을 클릭하거나 아래 버튼을 눌러주세요</p>
+              )}
             </div>
 
             {/* 🔄 Again */}
