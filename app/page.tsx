@@ -467,7 +467,14 @@ const handleSpeak = async () => {
 
   /* ========================= UI ========================= */
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-blue-50">
+    <div style={{
+      minHeight: '100vh',
+      background: 'linear-gradient(135deg, #fdf2f8 0%, #ffffff 50%, #eff6ff 100%)',
+      fontFamily: 'system-ui, sans-serif',
+      margin: 0,
+      padding: 0,
+      overflowX: 'hidden'
+    }}>
       {/* Header */}
       <div className="relative z-10 flex justify-between items-center p-6 pt-12">
         <motion.h1 initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="text-xl font-bold bg-gradient-to-r from-pink-600 to-blue-600 bg-clip-text text-transparent">
