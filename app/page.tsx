@@ -138,7 +138,7 @@ export default function Page() {
     console.log('HTTPS:', window.location.protocol === 'https:');
     console.log('Host:', window.location.host);
     console.log('MediaDevices 지원:', !!navigator.mediaDevices);
-    console.log('getUserMedia 지원:', !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+    console.log('getUserMedia 지원:', !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia));
     
     const hasSR = 'SpeechRecognition' in window || 'webkitSpeechRecognition' in window;
     console.log('SpeechRecognition 지원:', hasSR);
