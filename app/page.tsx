@@ -856,30 +856,99 @@ const handleSpeak = async () => {
                   <motion.div 
                     initial={{ opacity: 0, y: 10 }} 
                     animate={{ opacity: 1, y: 0 }} 
-                    className="bg-gradient-to-br from-orange-50 to-red-50 border-2 border-orange-300 rounded-xl p-6 max-w-lg text-center shadow-lg"
+                    style={{
+                      background: 'linear-gradient(to bottom right, #fff7ed, #fef2f2)',
+                      border: '2px solid #fb923c',
+                      borderRadius: '0.75rem',
+                      padding: '1.5rem',
+                      maxWidth: '32rem',
+                      textAlign: 'center',
+                      boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)'
+                    }}
                   >
-                    <div className="mb-4">
-                      <div className="text-4xl mb-2">🎤</div>
-                      <p className="text-lg font-bold text-orange-800 mb-1">마이크 권한이 필요해요</p>
-                      <p className="text-sm text-orange-600">아래 단계를 따라 권한을 허용해주세요</p>
+                    <div style={{ marginBottom: '1rem' }}>
+                      <div style={{ fontSize: '2.25rem', marginBottom: '0.5rem' }}>🎤</div>
+                      <p style={{
+                        fontSize: '1.125rem',
+                        fontWeight: 'bold',
+                        color: '#9a3412',
+                        marginBottom: '0.25rem'
+                      }}>
+                        마이크 권한이 필요해요
+                      </p>
+                      <p style={{
+                        fontSize: '0.875rem',
+                        color: '#c2410c'
+                      }}>
+                        아래 단계를 따라 권한을 허용해주세요
+                      </p>
                     </div>
                     
-                    <div className="text-sm text-orange-700 space-y-3 text-left">
+                    <div style={{
+                      fontSize: '0.875rem',
+                      color: '#9a3412',
+                      textAlign: 'left'
+                    }}>
                       {(() => {
                         // 서버 사이드 렌더링에서 navigator 접근 방지
                         if (typeof window === 'undefined') {
                           return (
-                            <div className="space-y-2">
-                              <div className="flex items-start space-x-2">
-                                <span className="bg-orange-200 text-orange-800 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">1</span>
-                                <p>브라우저 주소창의 <span className="font-semibold">🔒 자물쇠 아이콘</span> 클릭</p>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+                                <span style={{
+                                  backgroundColor: '#fed7aa',
+                                  color: '#9a3412',
+                                  borderRadius: '50%',
+                                  width: '1.25rem',
+                                  height: '1.25rem',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  fontSize: '0.75rem',
+                                  fontWeight: 'bold',
+                                  flexShrink: 0,
+                                  marginTop: '0.125rem'
+                                }}>
+                                  1
+                                </span>
+                                <p>브라우저 주소창의 <span style={{ fontWeight: '600' }}>🔒 자물쇠 아이콘</span> 클릭</p>
                               </div>
-                              <div className="flex items-start space-x-2">
-                                <span className="bg-orange-200 text-orange-800 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">2</span>
-                                <p>마이크 권한을 <span className="font-semibold text-green-600">&quot;허용&quot;</span>으로 변경</p>
+                              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+                                <span style={{
+                                  backgroundColor: '#fed7aa',
+                                  color: '#9a3412',
+                                  borderRadius: '50%',
+                                  width: '1.25rem',
+                                  height: '1.25rem',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  fontSize: '0.75rem',
+                                  fontWeight: 'bold',
+                                  flexShrink: 0,
+                                  marginTop: '0.125rem'
+                                }}>
+                                  2
+                                </span>
+                                <p>마이크 권한을 <span style={{ fontWeight: '600', color: '#16a34a' }}>&quot;허용&quot;</span>으로 변경</p>
                               </div>
-                              <div className="flex items-start space-x-2">
-                                <span className="bg-orange-200 text-orange-800 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">3</span>
+                              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+                                <span style={{
+                                  backgroundColor: '#fed7aa',
+                                  color: '#9a3412',
+                                  borderRadius: '50%',
+                                  width: '1.25rem',
+                                  height: '1.25rem',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  fontSize: '0.75rem',
+                                  fontWeight: 'bold',
+                                  flexShrink: 0,
+                                  marginTop: '0.125rem'
+                                }}>
+                                  3
+                                </span>
                                 <p>페이지 새로고침 후 다시 시도</p>
                               </div>
                             </div>
@@ -893,37 +962,112 @@ const handleSpeak = async () => {
                         if (isMobile) {
                           if (isIOS) {
                             return (
-                              <div className="space-y-2">
-                                <div className="text-center mb-3">
-                                  <p className="font-semibold text-orange-800">📱 iPhone/iPad 사용자</p>
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                                <div style={{ textAlign: 'center', marginBottom: '0.75rem' }}>
+                                  <p style={{ fontWeight: '600', color: '#9a3412' }}>📱 iPhone/iPad 사용자</p>
                                 </div>
-                                <div className="flex items-start space-x-2">
-                                  <span className="bg-orange-200 text-orange-800 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">1</span>
-                                  <p><span className="font-semibold">설정</span> 앱 열기</p>
+                                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+                                  <span style={{
+                                    backgroundColor: '#fed7aa',
+                                    color: '#9a3412',
+                                    borderRadius: '50%',
+                                    width: '1.25rem',
+                                    height: '1.25rem',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    fontSize: '0.75rem',
+                                    fontWeight: 'bold',
+                                    flexShrink: 0,
+                                    marginTop: '0.125rem'
+                                  }}>
+                                    1
+                                  </span>
+                                  <p><span style={{ fontWeight: '600' }}>설정</span> 앱 열기</p>
                                 </div>
-                                <div className="flex items-start space-x-2">
-                                  <span className="bg-orange-200 text-orange-800 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">2</span>
-                                  <p><span className="font-semibold">Safari</span> 선택</p>
+                                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+                                  <span style={{
+                                    backgroundColor: '#fed7aa',
+                                    color: '#9a3412',
+                                    borderRadius: '50%',
+                                    width: '1.25rem',
+                                    height: '1.25rem',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    fontSize: '0.75rem',
+                                    fontWeight: 'bold',
+                                    flexShrink: 0,
+                                    marginTop: '0.125rem'
+                                  }}>
+                                    2
+                                  </span>
+                                  <p><span style={{ fontWeight: '600' }}>Safari</span> 선택</p>
                                 </div>
-                                <div className="flex items-start space-x-2">
-                                  <span className="bg-orange-200 text-orange-800 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">3</span>
-                                  <p><span className="font-semibold">웹사이트 설정</span> → <span className="font-semibold">마이크</span></p>
+                                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+                                  <span style={{
+                                    backgroundColor: '#fed7aa',
+                                    color: '#9a3412',
+                                    borderRadius: '50%',
+                                    width: '1.25rem',
+                                    height: '1.25rem',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    fontSize: '0.75rem',
+                                    fontWeight: 'bold',
+                                    flexShrink: 0,
+                                    marginTop: '0.125rem'
+                                  }}>
+                                    3
+                                  </span>
+                                  <p><span style={{ fontWeight: '600' }}>웹사이트 설정</span> → <span style={{ fontWeight: '600' }}>마이크</span></p>
                                 </div>
-                                <div className="flex items-start space-x-2">
-                                  <span className="bg-orange-200 text-orange-800 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">4</span>
-                                  <p>이 사이트를 <span className="font-semibold text-green-600">허용</span>으로 변경</p>
+                                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+                                  <span style={{
+                                    backgroundColor: '#fed7aa',
+                                    color: '#9a3412',
+                                    borderRadius: '50%',
+                                    width: '1.25rem',
+                                    height: '1.25rem',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    fontSize: '0.75rem',
+                                    fontWeight: 'bold',
+                                    flexShrink: 0,
+                                    marginTop: '0.125rem'
+                                  }}>
+                                    4
+                                  </span>
+                                  <p>이 사이트를 <span style={{ fontWeight: '600', color: '#16a34a' }}>허용</span>으로 변경</p>
                                 </div>
-                                <div className="flex items-start space-x-2">
-                                  <span className="bg-orange-200 text-orange-800 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">5</span>
+                                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+                                  <span style={{
+                                    backgroundColor: '#fed7aa',
+                                    color: '#9a3412',
+                                    borderRadius: '50%',
+                                    width: '1.25rem',
+                                    height: '1.25rem',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    fontSize: '0.75rem',
+                                    fontWeight: 'bold',
+                                    flexShrink: 0,
+                                    marginTop: '0.125rem'
+                                  }}>
+                                    5
+                                  </span>
                                   <p>Safari로 돌아가서 페이지 새로고침</p>
                                 </div>
                               </div>
                             );
                           } else if (isAndroid) {
                             return (
-                              <div className="space-y-2">
-                                <div className="text-center mb-3">
-                                  <p className="font-semibold text-orange-800">🤖 Android 사용자</p>
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                                <div style={{ textAlign: 'center', marginBottom: '0.75rem' }}>
+                                  <p style={{ fontWeight: '600', color: '#9a3412' }}>🤖 Android 사용자</p>
                                 </div>
                                 <div className="flex items-start space-x-2">
                                   <span className="bg-orange-200 text-orange-800 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">1</span>
