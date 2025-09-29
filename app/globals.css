@@ -33,11 +33,99 @@ body {
   background: #a8a8a8;
 }
 
+/* Android 브라우저 호환성 개선 */
+* {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  overflow-x: hidden;
+}
+
+/* Android Chrome 최적화 */
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
 /* 모바일 최적화 */
 @media (max-width: 768px) {
   body {
     -webkit-text-size-adjust: 100%;
     -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+  
+  /* Android에서 터치 이벤트 최적화 */
+  * {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+  }
+  
+  /* Android에서 스크롤 최적화 */
+  body {
+    -webkit-overflow-scrolling: touch;
+    overflow-scrolling: touch;
+  }
+}
+
+/* Android 특화 최적화 */
+@media screen and (max-width: 768px) {
+  /* Android에서 그라데이션 최적화 */
+  body {
+    background: #fdf2f8;
+    background: -webkit-linear-gradient(135deg, #fdf2f8 0%, #ffffff 50%, #eff6ff 100%);
+    background: -moz-linear-gradient(135deg, #fdf2f8 0%, #ffffff 50%, #eff6ff 100%);
+    background: linear-gradient(135deg, #fdf2f8 0%, #ffffff 50%, #eff6ff 100%);
+  }
+  
+  /* Android에서 flexbox 최적화 */
+  .flex {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+  }
+  
+  /* Android에서 transform 최적화 */
+  .transform {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+}
+
+/* Android Chrome에서 스크롤바 숨기기 */
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  ::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
   }
 }
 

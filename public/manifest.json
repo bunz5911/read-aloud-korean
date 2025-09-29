@@ -7,6 +7,8 @@
   "background_color": "#ffffff",
   "theme_color": "#ec4899",
   "orientation": "portrait",
+  "scope": "/",
+  "id": "read-aloud-korean",
   "icons": [
     {
       "src": "/icon-192.png",
@@ -23,5 +25,15 @@
   ],
   "categories": ["education", "productivity"],
   "lang": "ko",
-  "dir": "ltr"
+  "dir": "ltr",
+  "prefer_related_applications": false,
+  "related_applications": [],
+  "screenshots": [],
+  "shortcuts": [],
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  }
 }

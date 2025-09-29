@@ -15,6 +15,7 @@ export const metadata: Metadata = {
     initialScale: 1,
     maximumScale: 1,
     userScalable: false,
+    viewportFit: 'cover',
   },
   themeColor: '#ec4899',
   manifest: '/manifest.json',
@@ -22,6 +23,13 @@ export const metadata: Metadata = {
     capable: true,
     statusBarStyle: 'default',
     title: 'Read Aloud Korean',
+  },
+  // Android 호환성 개선
+  other: {
+    'mobile-web-app-capable': 'yes',
+    'mobile-web-app-status-bar-style': 'default',
+    'msapplication-TileColor': '#ec4899',
+    'msapplication-config': '/browserconfig.xml',
   },
 };
 

@@ -124,13 +124,21 @@ export default function Page() {
   useEffect(() => {
     if (typeof window === 'undefined') return;
     
+    // Android 브라우저 호환성 체크
+    const isAndroid = /Android/i.test(navigator.userAgent);
+    const isChrome = /Chrome/i.test(navigator.userAgent);
+    const isSamsung = /SamsungBrowser/i.test(navigator.userAgent);
+    
     // 디버깅 정보 출력
     console.log('=== 마이크 상태 디버깅 ===');
-    console.log('User Agent:', typeof window !== 'undefined' ? navigator.userAgent : 'SSR');
-    console.log('HTTPS:', typeof window !== 'undefined' ? window.location.protocol === 'https:' : 'SSR');
-    console.log('Host:', typeof window !== 'undefined' ? window.location.host : 'SSR');
-    console.log('MediaDevices 지원:', typeof window !== 'undefined' ? !!navigator.mediaDevices : 'SSR');
-    console.log('getUserMedia 지원:', typeof window !== 'undefined' ? !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) : 'SSR');
+    console.log('User Agent:', navigator.userAgent);
+    console.log('Android:', isAndroid);
+    console.log('Chrome:', isChrome);
+    console.log('Samsung Browser:', isSamsung);
+    console.log('HTTPS:', window.location.protocol === 'https:');
+    console.log('Host:', window.location.host);
+    console.log('MediaDevices 지원:', !!navigator.mediaDevices);
+    console.log('getUserMedia 지원:', !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
     
     const hasSR = 'SpeechRecognition' in window || 'webkitSpeechRecognition' in window;
     console.log('SpeechRecognition 지원:', hasSR);
@@ -163,7 +171,27 @@ export default function Page() {
         const anyNav: any = navigator as any;
         console.log('Permissions API 지원:', !!anyNav?.permissions?.query);
         
-        if (anyNav?.permissions?.query) {
+        // Android에서는 Permissions API가 제한적이므로 실제 마이크 접근으로 테스트
+        if (isAndroid) {
+          console.log('Android 감지 - 실제 마이크 접근으로 테스트');
+          try {
+            const stream = await navigator.mediaDevices.getUserMedia({ 
+              audio: {
+                echoCancellation: true,
+                noiseSuppression: true,
+                autoGainControl: true,
+                sampleRate: 44100,
+                channelCount: 1,
+              }
+            });
+            console.log('✅ Android 마이크 접근 성공 - 권한 OK');
+            setMicState('ok');
+            stream.getTracks().forEach(track => track.stop()); // 즉시 정리
+          } catch (err) {
+            console.log('❌ Android 마이크 접근 실패:', err);
+            setMicState('blocked');
+          }
+        } else if (anyNav?.permissions?.query) {
           const status = await anyNav.permissions.query({ name: 'microphone' as any });
           console.log('마이크 권한 상태:', status.state);
           if (status.state === 'granted') {
@@ -178,7 +206,6 @@ export default function Page() {
           }
         } else {
           console.log('Permissions API 미지원 - 실제 마이크 접근으로 테스트');
-          // Permissions API가 없으면 실제 마이크 접근을 시도해보기
           try {
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
             console.log('✅ 마이크 접근 성공 - 권한 OK');
