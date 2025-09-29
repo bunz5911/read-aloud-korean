@@ -87,7 +87,7 @@ export default function Home() {
       // 기본 설정
       rec.lang = 'ko-KR';
       rec.continuous = false;
-      rec.interimResults = true;
+      rec.interimResults = false; // 모바일에서는 interimResults를 false로 설정
       rec.maxAlternatives = 1;
       
       // 모바일 최적화 설정
@@ -97,6 +97,7 @@ export default function Home() {
           console.log('모바일 감지 - 최적화 설정 적용');
           rec.grammars = null; // 문법 제한 제거
           rec.serviceURI = undefined; // 서비스 URI 제거
+          rec.continuous = false; // 모바일에서는 continuous를 false로 강제
         }
       }
       
@@ -156,21 +157,25 @@ export default function Home() {
       if (recognitionRef.current) {
         console.log('Speech Recognition 시작');
         
+        // 이벤트 핸들러 재설정 (모바일에서 중요)
         recognitionRef.current.onstart = () => {
           console.log('✅ Speech Recognition 녹음 시작');
         };
 
         recognitionRef.current.onresult = (event: any) => {
           console.log('Speech Recognition 결과:', event);
-          const transcript = event.results[0][0].transcript;
-          console.log('인식된 텍스트:', transcript);
           
-          setUserText(transcript);
-          setAppState('transcribed');
-          setIsRecording(false);
-          
-          // AI 교정 요청
-          handleCorrection(transcript);
+          if (event.results && event.results.length > 0) {
+            const transcript = event.results[0][0].transcript;
+            console.log('인식된 텍스트:', transcript);
+            
+            setUserText(transcript);
+            setAppState('transcribed');
+            setIsRecording(false);
+            
+            // AI 교정 요청
+            handleCorrection(transcript);
+          }
         };
 
         recognitionRef.current.onerror = (event: any) => {
@@ -183,7 +188,12 @@ export default function Home() {
             alert('마이크 권한이 거부되었습니다. 브라우저 설정에서 마이크 권한을 허용해주세요.');
           } else if (event.error === 'no-speech') {
             alert('음성이 감지되지 않았습니다. 다시 시도해주세요.');
+          } else if (event.error === 'network') {
+            alert('네트워크 오류가 발생했습니다. 인터넷 연결을 확인해주세요.');
+          } else if (event.error === 'aborted') {
+            console.log('Speech Recognition 중단됨');
           } else {
+            console.log('기타 오류:', event.error);
             alert('음성 인식 중 오류가 발생했습니다. 다시 시도해주세요.');
           }
         };
@@ -193,8 +203,18 @@ export default function Home() {
           setIsRecording(false);
         };
 
-        recognitionRef.current.start();
-        console.log('Speech Recognition start() 호출 완료');
+        // 모바일에서 안정적인 시작을 위해 약간의 지연
+        setTimeout(() => {
+          try {
+            recognitionRef.current.start();
+            console.log('Speech Recognition start() 호출 완료');
+          } catch (startError) {
+            console.error('Speech Recognition start() 오류:', startError);
+            setIsRecording(false);
+            setAppState('initial');
+          }
+        }, 100);
+        
       } else {
         console.error('Speech Recognition 객체 없음');
         setIsRecording(false);
@@ -713,65 +733,264 @@ export default function Home() {
             color: '#9a3412',
             textAlign: 'left'
           }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
-                <span style={{
-                  backgroundColor: '#fed7aa',
-                  color: '#9a3412',
-                  borderRadius: '50%',
-                  width: '1.25rem',
-                  height: '1.25rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '0.75rem',
-                  fontWeight: 'bold',
-                  flexShrink: 0,
-                  marginTop: '0.125rem'
-                }}>
-                  1
-                </span>
-                <p>브라우저 주소창의 <span style={{ fontWeight: '600' }}>🔒 자물쇠 아이콘</span> 클릭</p>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
-                <span style={{
-                  backgroundColor: '#fed7aa',
-                  color: '#9a3412',
-                  borderRadius: '50%',
-                  width: '1.25rem',
-                  height: '1.25rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '0.75rem',
-                  fontWeight: 'bold',
-                  flexShrink: 0,
-                  marginTop: '0.125rem'
-                }}>
-                  2
-                </span>
-                <p>마이크 권한을 <span style={{ fontWeight: '600', color: '#16a34a' }}>&quot;허용&quot;</span>으로 변경</p>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
-                <span style={{
-                  backgroundColor: '#fed7aa',
-                  color: '#9a3412',
-                  borderRadius: '50%',
-                  width: '1.25rem',
-                  height: '1.25rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '0.75rem',
-                  fontWeight: 'bold',
-                  flexShrink: 0,
-                  marginTop: '0.125rem'
-                }}>
-                  3
-                </span>
-                <p>페이지 새로고침 후 다시 시도</p>
-              </div>
-            </div>
+            {(() => {
+              const isMobile = typeof window !== 'undefined' ? /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) : false;
+              const isIOS = typeof window !== 'undefined' ? /iPad|iPhone|iPod/.test(navigator.userAgent) : false;
+              const isAndroid = typeof window !== 'undefined' ? /Android/.test(navigator.userAgent) : false;
+
+              if (isMobile) {
+                if (isIOS) {
+                  return (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                      <div style={{ textAlign: 'center', marginBottom: '0.75rem' }}>
+                        <p style={{ fontWeight: '600', color: '#9a3412' }}>📱 iPhone/iPad 사용자</p>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+                        <span style={{
+                          backgroundColor: '#fed7aa',
+                          color: '#9a3412',
+                          borderRadius: '50%',
+                          width: '1.25rem',
+                          height: '1.25rem',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: '0.75rem',
+                          fontWeight: 'bold',
+                          flexShrink: 0,
+                          marginTop: '0.125rem'
+                        }}>
+                          1
+                        </span>
+                        <p><span style={{ fontWeight: '600' }}>설정</span> 앱 열기</p>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+                        <span style={{
+                          backgroundColor: '#fed7aa',
+                          color: '#9a3412',
+                          borderRadius: '50%',
+                          width: '1.25rem',
+                          height: '1.25rem',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: '0.75rem',
+                          fontWeight: 'bold',
+                          flexShrink: 0,
+                          marginTop: '0.125rem'
+                        }}>
+                          2
+                        </span>
+                        <p><span style={{ fontWeight: '600' }}>Safari</span> 선택</p>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+                        <span style={{
+                          backgroundColor: '#fed7aa',
+                          color: '#9a3412',
+                          borderRadius: '50%',
+                          width: '1.25rem',
+                          height: '1.25rem',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: '0.75rem',
+                          fontWeight: 'bold',
+                          flexShrink: 0,
+                          marginTop: '0.125rem'
+                        }}>
+                          3
+                        </span>
+                        <p><span style={{ fontWeight: '600' }}>웹사이트 설정</span> → <span style={{ fontWeight: '600' }}>마이크</span></p>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+                        <span style={{
+                          backgroundColor: '#fed7aa',
+                          color: '#9a3412',
+                          borderRadius: '50%',
+                          width: '1.25rem',
+                          height: '1.25rem',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: '0.75rem',
+                          fontWeight: 'bold',
+                          flexShrink: 0,
+                          marginTop: '0.125rem'
+                        }}>
+                          4
+                        </span>
+                        <p>이 사이트를 <span style={{ fontWeight: '600', color: '#16a34a' }}>허용</span>으로 변경</p>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+                        <span style={{
+                          backgroundColor: '#fed7aa',
+                          color: '#9a3412',
+                          borderRadius: '50%',
+                          width: '1.25rem',
+                          height: '1.25rem',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: '0.75rem',
+                          fontWeight: 'bold',
+                          flexShrink: 0,
+                          marginTop: '0.125rem'
+                        }}>
+                          5
+                        </span>
+                        <p>Safari로 돌아가서 페이지 새로고침</p>
+                      </div>
+                    </div>
+                  );
+                } else if (isAndroid) {
+                  return (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                      <div style={{ textAlign: 'center', marginBottom: '0.75rem' }}>
+                        <p style={{ fontWeight: '600', color: '#9a3412' }}>🤖 Android 사용자</p>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+                        <span style={{
+                          backgroundColor: '#fed7aa',
+                          color: '#9a3412',
+                          borderRadius: '50%',
+                          width: '1.25rem',
+                          height: '1.25rem',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: '0.75rem',
+                          fontWeight: 'bold',
+                          flexShrink: 0,
+                          marginTop: '0.125rem'
+                        }}>
+                          1
+                        </span>
+                        <p>Chrome 주소창의 <span style={{ fontWeight: '600' }}>🔒 자물쇠 아이콘</span> 클릭</p>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+                        <span style={{
+                          backgroundColor: '#fed7aa',
+                          color: '#9a3412',
+                          borderRadius: '50%',
+                          width: '1.25rem',
+                          height: '1.25rem',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: '0.75rem',
+                          fontWeight: 'bold',
+                          flexShrink: 0,
+                          marginTop: '0.125rem'
+                        }}>
+                          2
+                        </span>
+                        <p>마이크를 <span style={{ fontWeight: '600', color: '#16a34a' }}>허용</span>으로 변경</p>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+                        <span style={{
+                          backgroundColor: '#fed7aa',
+                          color: '#9a3412',
+                          borderRadius: '50%',
+                          width: '1.25rem',
+                          height: '1.25rem',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: '0.75rem',
+                          fontWeight: 'bold',
+                          flexShrink: 0,
+                          marginTop: '0.125rem'
+                        }}>
+                          3
+                        </span>
+                        <p>또는 Chrome 메뉴 → <span style={{ fontWeight: '600' }}>설정</span> → <span style={{ fontWeight: '600' }}>사이트 설정</span> → <span style={{ fontWeight: '600' }}>마이크</span></p>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+                        <span style={{
+                          backgroundColor: '#fed7aa',
+                          color: '#9a3412',
+                          borderRadius: '50%',
+                          width: '1.25rem',
+                          height: '1.25rem',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: '0.75rem',
+                          fontWeight: 'bold',
+                          flexShrink: 0,
+                          marginTop: '0.125rem'
+                        }}>
+                          4
+                        </span>
+                        <p>페이지 새로고침 후 다시 시도</p>
+                      </div>
+                    </div>
+                  );
+                }
+              }
+              
+              return (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+                    <span style={{
+                      backgroundColor: '#fed7aa',
+                      color: '#9a3412',
+                      borderRadius: '50%',
+                      width: '1.25rem',
+                      height: '1.25rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '0.75rem',
+                      fontWeight: 'bold',
+                      flexShrink: 0,
+                      marginTop: '0.125rem'
+                    }}>
+                      1
+                    </span>
+                    <p>브라우저 주소창의 <span style={{ fontWeight: '600' }}>🔒 자물쇠 아이콘</span> 클릭</p>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+                    <span style={{
+                      backgroundColor: '#fed7aa',
+                      color: '#9a3412',
+                      borderRadius: '50%',
+                      width: '1.25rem',
+                      height: '1.25rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '0.75rem',
+                      fontWeight: 'bold',
+                      flexShrink: 0,
+                      marginTop: '0.125rem'
+                    }}>
+                      2
+                    </span>
+                    <p>마이크 권한을 <span style={{ fontWeight: '600', color: '#16a34a' }}>&quot;허용&quot;</span>으로 변경</p>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+                    <span style={{
+                      backgroundColor: '#fed7aa',
+                      color: '#9a3412',
+                      borderRadius: '50%',
+                      width: '1.25rem',
+                      height: '1.25rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '0.75rem',
+                      fontWeight: 'bold',
+                      flexShrink: 0,
+                      marginTop: '0.125rem'
+                    }}>
+                      3
+                    </span>
+                    <p>페이지 새로고침 후 다시 시도</p>
+                  </div>
+                </div>
+              );
+            })()}
           </div>
         </motion.div>
       )}
