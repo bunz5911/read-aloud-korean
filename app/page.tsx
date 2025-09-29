@@ -28,27 +28,30 @@ export default function Home() {
   const recognitionRef = useRef<any>(null);
   const mediaStreamRef = useRef<MediaStream | null>(null);
 
-  // 마이크 권한 체크
+  // 마이크 권한 체크 (모바일 최적화)
   const checkMicPermission = async () => {
     try {
+      console.log('마이크 권한 체크 시작');
+      
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        console.log('getUserMedia 지원 안됨');
         setMicState('unsupported');
         return false;
       }
 
+      // 모바일에서는 더 간단한 설정으로 권한 체크
       const stream = await navigator.mediaDevices.getUserMedia({ 
-        audio: {
-          echoCancellation: true,
-          noiseSuppression: true,
-          autoGainControl: true
-        } 
+        audio: true
       });
       
+      console.log('마이크 권한 허용됨');
       setMicState('ok');
       stream.getTracks().forEach(track => track.stop());
       return true;
       
     } catch (err: any) {
+      console.log('마이크 권한 오류:', err.name, err.message);
+      
       if (err.name === 'NotAllowedError') {
         setMicState('denied');
       } else if (err.name === 'NotFoundError') {
@@ -60,29 +63,53 @@ export default function Home() {
     }
   };
 
-  // Speech Recognition 초기화
+  // Speech Recognition 초기화 (모바일 최적화)
   useEffect(() => {
     if (typeof window === 'undefined') return;
     
+    console.log('Speech Recognition 초기화 시작');
+    
     // Speech Recognition 지원 체크
     const hasSR = 'SpeechRecognition' in window || 'webkitSpeechRecognition' in window;
+    console.log('Speech Recognition 지원:', hasSR);
+    
     if (!hasSR) { 
+      console.log('Speech Recognition 미지원');
       setMicState('unsupported'); 
       return; 
     }
     
-    // Speech Recognition 설정
-    const SR: any = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    const rec = new SR();
-    rec.lang = 'ko-KR';
-    rec.continuous = false;
-    rec.interimResults = true;
-    rec.maxAlternatives = 1;
-    
-    recognitionRef.current = rec;
+    try {
+      // Speech Recognition 설정 (모바일 최적화)
+      const SR: any = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      const rec = new SR();
+      
+      // 기본 설정
+      rec.lang = 'ko-KR';
+      rec.continuous = false;
+      rec.interimResults = true;
+      rec.maxAlternatives = 1;
+      
+      // 모바일 최적화 설정
+      if (typeof window !== 'undefined') {
+        const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        if (isMobile) {
+          console.log('모바일 감지 - 최적화 설정 적용');
+          rec.grammars = null; // 문법 제한 제거
+          rec.serviceURI = undefined; // 서비스 URI 제거
+        }
+      }
+      
+      recognitionRef.current = rec;
+      console.log('Speech Recognition 초기화 완료');
 
-    // 마이크 권한 체크
-    checkMicPermission();
+      // 마이크 권한 체크
+      checkMicPermission();
+
+    } catch (error) {
+      console.error('Speech Recognition 초기화 오류:', error);
+      setMicState('unsupported');
+    }
 
     return () => {
       try { 
@@ -94,14 +121,21 @@ export default function Home() {
     };
   }, []);
 
-  // 녹음 시작
+  // 녹음 시작 (모바일 최적화)
   const handleStartRecording = async () => {
+    console.log('녹음 시작 요청, 마이크 상태:', micState);
+    
     if (micState !== 'ok') {
-      alert('마이크 권한이 필요합니다. 브라우저 설정에서 마이크 권한을 허용해주세요.');
-      return;
+      console.log('마이크 권한 없음, 권한 재체크');
+      const hasPermission = await checkMicPermission();
+      if (!hasPermission) {
+        alert('마이크 권한이 필요합니다. 브라우저 설정에서 마이크 권한을 허용해주세요.');
+        return;
+      }
     }
 
     try {
+      console.log('녹음 상태 설정');
       setIsRecording(true);
       setAppState('recording');
       setUserText('');
@@ -110,24 +144,27 @@ export default function Home() {
       setAiNotes([]);
       setAiError(null);
 
-      // 마이크 스트림 시작
+      // 마이크 스트림 시작 (모바일 최적화)
+      console.log('마이크 스트림 요청');
       const stream = await navigator.mediaDevices.getUserMedia({ 
-        audio: {
-          echoCancellation: true,
-          noiseSuppression: true,
-          autoGainControl: true
-        } 
+        audio: true // 모바일에서는 간단한 설정 사용
       });
       mediaStreamRef.current = stream;
+      console.log('마이크 스트림 성공');
 
       // Speech Recognition 시작
       if (recognitionRef.current) {
+        console.log('Speech Recognition 시작');
+        
         recognitionRef.current.onstart = () => {
-          console.log('녹음 시작');
+          console.log('✅ Speech Recognition 녹음 시작');
         };
 
         recognitionRef.current.onresult = (event: any) => {
+          console.log('Speech Recognition 결과:', event);
           const transcript = event.results[0][0].transcript;
+          console.log('인식된 텍스트:', transcript);
+          
           setUserText(transcript);
           setAppState('transcribed');
           setIsRecording(false);
@@ -137,21 +174,37 @@ export default function Home() {
         };
 
         recognitionRef.current.onerror = (event: any) => {
-          console.error('Speech Recognition 오류:', event.error);
+          console.error('❌ Speech Recognition 오류:', event.error);
           setIsRecording(false);
           setAppState('initial');
+          
+          // 오류별 안내 메시지
+          if (event.error === 'not-allowed') {
+            alert('마이크 권한이 거부되었습니다. 브라우저 설정에서 마이크 권한을 허용해주세요.');
+          } else if (event.error === 'no-speech') {
+            alert('음성이 감지되지 않았습니다. 다시 시도해주세요.');
+          } else {
+            alert('음성 인식 중 오류가 발생했습니다. 다시 시도해주세요.');
+          }
         };
 
         recognitionRef.current.onend = () => {
+          console.log('Speech Recognition 종료');
           setIsRecording(false);
         };
 
         recognitionRef.current.start();
+        console.log('Speech Recognition start() 호출 완료');
+      } else {
+        console.error('Speech Recognition 객체 없음');
+        setIsRecording(false);
+        setAppState('initial');
       }
     } catch (error) {
       console.error('녹음 시작 오류:', error);
       setIsRecording(false);
       setAppState('initial');
+      alert('마이크 접근에 실패했습니다. 브라우저 설정을 확인해주세요.');
     }
   };
 
