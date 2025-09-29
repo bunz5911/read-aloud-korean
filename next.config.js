@@ -8,6 +8,9 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  experimental: {
+    appDir: false,
+  },
 };
 
 module.exports = nextConfig;

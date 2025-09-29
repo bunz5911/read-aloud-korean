@@ -1,7 +1,5 @@
-// app/api/correct/route.ts
-import { NextRequest, NextResponse } from 'next/server';
-
-export const runtime = 'nodejs';
+// pages/api/correct.ts
+import { NextApiRequest, NextApiResponse } from 'next';
 
 type SpeechLevel = 'banmal' | 'jondaetmal';
 
@@ -133,7 +131,7 @@ function ruleBasedCorrect(text: string): { corrected: string; notes: string[] } 
 /* ---------- 말투 보정 세이프티넷 ---------- */
 function enforceSpeechLevelServer(textRaw: string, level: SpeechLevel): string {
   let t = (textRaw || '').trim();
-  t = t.replace(/\s+/g, ' ').replace(/\s([,.!?])/g, '$1').replace(/[“”"]/g, '');
+  t = t.replace(/\s+/g, ' ').replace(/\s([,.!?])/g, '$1').replace(/["""]/g, '');
   if (!/[.!?]$/.test(t)) t += '.';
   t = t.replace(/거에요/g, '거예요');
 
@@ -183,8 +181,8 @@ async function callOpenAI(prompt: string): Promise<string> {
             '시간 부사와 동사 시제가 충돌하면 반드시 일치시킵니다.',
             '출력은 오직 교정된 한 문장만. 설명·따옴표·메타텍스트 금지.',
             '말투 규칙:',
-            '- 존댓말: 해요체(문장 끝이 “요” 또는 “습니다/입니다”).',
-            '- 반말: 해체(“어/아/해/했어/거야/한다” 등), 문장 끝에 “요” 금지.',
+            '- 존댓말: 해요체(문장 끝이 "요" 또는 "습니다/입니다").',
+            '- 반말: 해체("어/아/해/했어/거야/한다" 등), 문장 끝에 "요" 금지.',
           ].join('\n'),
         },
         // few-shot
@@ -212,15 +210,19 @@ async function callOpenAI(prompt: string): Promise<string> {
 }
 
 /* ---------- POST ---------- */
-export async function POST(req: NextRequest) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
   try {
     if (!OPENAI_API_KEY) {
-      return NextResponse.json({ error: 'Missing OPENAI_API_KEY' }, { status: 500 });
+      return res.status(500).json({ error: 'Missing OPENAI_API_KEY' });
     }
 
-    const { text, speechLevel }: { text: string; speechLevel: SpeechLevel } = await req.json();
+    const { text, speechLevel }: { text: string; speechLevel: SpeechLevel } = req.body;
     const input = (text || '').trim();
-    if (!input) return NextResponse.json({ result: '', notes: [] });
+    if (!input) return res.json({ result: '', notes: [] });
 
     // 1) 룰 기반 1차 교정 + 노트
     const base = ruleBasedCorrect(input);
@@ -230,7 +232,7 @@ export async function POST(req: NextRequest) {
     const hit = cache.get(key);
     const now = Date.now();
     if (hit && hit.expires > now) {
-      return NextResponse.json({ result: hit.value.result, notes: hit.value.notes, cached: true });
+      return res.json({ result: hit.value.result, notes: hit.value.notes, cached: true });
     }
 
     // 2) OpenAI 후처리 (말투/자연스러움 보정)
@@ -256,18 +258,18 @@ export async function POST(req: NextRequest) {
     // 4) 캐시 + 응답
     const payload = { result, notes: base.notes };
     cache.set(key, { value: payload, expires: now + CACHE_TTL_MS });
-    return NextResponse.json({ ...payload, cached: false });
+    return res.json({ ...payload, cached: false });
   } catch (e: any) {
     console.error('교정 API 오류:', e);
     
     // OpenAI 할당량 초과 오류 처리
     if (e?.message?.includes('quota') || e?.message?.includes('insufficient_quota')) {
-      return NextResponse.json({ 
+      return res.status(429).json({ 
         error: 'OpenAI API 할당량이 초과되었습니다. 잠시 후 다시 시도해주세요.',
         type: 'quota_exceeded'
-      }, { status: 429 });
+      });
     }
     
-    return NextResponse.json({ error: e?.message || 'Unknown error' }, { status: 500 });
+    return res.status(500).json({ error: e?.message || 'Unknown error' });
   }
 }
