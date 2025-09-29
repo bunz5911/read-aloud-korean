@@ -476,23 +476,64 @@ const handleSpeak = async () => {
       overflowX: 'hidden'
     }}>
       {/* Header */}
-      <div className="relative z-10 flex justify-between items-center p-6 pt-12">
-        <motion.h1 initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="text-xl font-bold bg-gradient-to-r from-pink-600 to-blue-600 bg-clip-text text-transparent">
+      <div style={{
+        position: 'relative',
+        zIndex: 10,
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: '1.5rem',
+        paddingTop: '3rem'
+      }}>
+        <motion.h1 
+          initial={{ opacity: 0, x: -20 }} 
+          animate={{ opacity: 1, x: 0 }} 
+          style={{
+            fontSize: '1.25rem',
+            fontWeight: 'bold',
+            background: 'linear-gradient(to right, #db2777, #2563eb)',
+            WebkitBackgroundClip: 'text',
+            backgroundClip: 'text',
+            color: 'transparent'
+          }}
+        >
           Read Aloud Korean
         </motion.h1>
-        <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="flex items-center space-x-2 bg-white/80 backdrop-blur-sm rounded-full px-3 py-1 shadow-sm">
-          <motion.div className={`w-2 h-2 rounded-full ${
-            micState === 'ok' ? 'bg-green-500' : 
-            micState === 'denied' ? 'bg-red-500' : 
-            micState === 'blocked' ? 'bg-orange-500' : 
-            'bg-gray-500'
-          }`} animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 1.5, repeat: Infinity }} />
-          <span className={`text-sm font-medium ${
-            micState === 'ok' ? 'text-green-700' : 
-            micState === 'denied' ? 'text-red-700' : 
-            micState === 'blocked' ? 'text-orange-700' : 
-            'text-gray-700'
-          }`}>
+        <motion.div 
+          initial={{ opacity: 0, x: 20 }} 
+          animate={{ opacity: 1, x: 0 }} 
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+            backgroundColor: 'rgba(255, 255, 255, 0.8)',
+            backdropFilter: 'blur(4px)',
+            borderRadius: '9999px',
+            padding: '0.25rem 0.75rem',
+            boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)'
+          }}
+        >
+          <motion.div 
+            style={{
+              width: '0.5rem',
+              height: '0.5rem',
+              borderRadius: '50%',
+              backgroundColor: micState === 'ok' ? '#10b981' : 
+                              micState === 'denied' ? '#ef4444' : 
+                              micState === 'blocked' ? '#f97316' : 
+                              '#6b7280'
+            }} 
+            animate={{ scale: [1, 1.2, 1] }} 
+            transition={{ duration: 1.5, repeat: Infinity }} 
+          />
+          <span style={{
+            fontSize: '0.875rem',
+            fontWeight: '500',
+            color: micState === 'ok' ? '#047857' : 
+                   micState === 'denied' ? '#b91c1c' : 
+                   micState === 'blocked' ? '#c2410c' : 
+                   '#374151'
+          }}>
             MIC {
               micState === 'ok' ? 'on' : 
               micState === 'denied' ? 'denied' : 
