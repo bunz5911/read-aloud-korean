@@ -283,8 +283,9 @@ export default function Home() {
       }
 
       const data = await response.json();
-      setCorrectedText(data.corrected);
-      setDisplayed(data.corrected);
+      console.log('API 응답:', data);
+      setCorrectedText(data.result);
+      setDisplayed(data.result);
       setAiNotes(data.notes || []);
       setAppState('analyzed');
     } catch (error) {
