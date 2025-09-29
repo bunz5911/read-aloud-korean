@@ -172,47 +172,25 @@ export default function Page() {
         console.log('Permissions API 지원:', !!anyNav?.permissions?.query);
         
         // Android에서는 Permissions API가 제한적이므로 실제 마이크 접근으로 테스트
-        if (isAndroid) {
-          console.log('Android 감지 - 실제 마이크 접근으로 테스트');
-          try {
-            const stream = await navigator.mediaDevices.getUserMedia({ 
-              audio: {
-                echoCancellation: true,
-                noiseSuppression: true,
-                autoGainControl: true,
-                sampleRate: 44100,
-                channelCount: 1,
-              }
-            });
-            console.log('✅ Android 마이크 접근 성공 - 권한 OK');
-            setMicState('ok');
-            stream.getTracks().forEach(track => track.stop()); // 즉시 정리
-          } catch (err) {
-            console.log('❌ Android 마이크 접근 실패:', err);
-            setMicState('blocked');
-          }
-        } else if (anyNav?.permissions?.query) {
-          const status = await anyNav.permissions.query({ name: 'microphone' as any });
-          console.log('마이크 권한 상태:', status.state);
-          if (status.state === 'granted') {
-            setMicState('ok');
-            console.log('✅ 마이크 권한이 이미 허용되어 있습니다');
-          } else if (status.state === 'denied') {
+        // 모든 플랫폼에서 실제 getUserMedia 호출로 권한 확인
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ 
+            audio: {
+              echoCancellation: true,
+              noiseSuppression: true,
+              autoGainControl: true
+            } 
+          });
+          console.log('✅ 마이크 접근 성공 - 권한 OK');
+          setMicState('ok');
+          stream.getTracks().forEach(track => track.stop()); // 즉시 정리
+        } catch (err: any) {
+          console.log('❌ 마이크 접근 실패:', err.name, err.message);
+          if (err.name === 'NotAllowedError') {
             setMicState('denied');
-            console.log('❌ 마이크 권한이 거부되었습니다');
-          } else {
+          } else if (err.name === 'NotFoundError') {
             setMicState('blocked');
-            console.log('⚠️ 마이크 권한이 차단되었습니다');
-          }
-        } else {
-          console.log('Permissions API 미지원 - 실제 마이크 접근으로 테스트');
-          try {
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            console.log('✅ 마이크 접근 성공 - 권한 OK');
-            setMicState('ok');
-            stream.getTracks().forEach(track => track.stop()); // 즉시 정리
-          } catch (err) {
-            console.log('❌ 마이크 접근 실패:', err);
+          } else {
             setMicState('blocked');
           }
         }
@@ -471,7 +449,18 @@ const handleSpeak = async () => {
       minHeight: '100vh',
       margin: 0,
       padding: 0,
-      overflowX: 'hidden'
+      overflowX: 'hidden',
+      background: 'linear-gradient(135deg, #fdf2f8 0%, #ffffff 50%, #eff6ff 100%)',
+      fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+      WebkitTextSizeAdjust: '100%',
+      WebkitFontSmoothing: 'antialiased',
+      MozOsxFontSmoothing: 'grayscale',
+      WebkitTapHighlightColor: 'transparent',
+      WebkitTouchCallout: 'none',
+      WebkitUserSelect: 'none',
+      MozUserSelect: 'none',
+      msUserSelect: 'none',
+      userSelect: 'none'
     }}>
       {/* Header */}
       <div style={{
