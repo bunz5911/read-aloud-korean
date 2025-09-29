@@ -469,8 +469,6 @@ const handleSpeak = async () => {
   return (
     <div style={{
       minHeight: '100vh',
-      background: 'linear-gradient(135deg, #fdf2f8 0%, #ffffff 50%, #eff6ff 100%)',
-      fontFamily: 'system-ui, sans-serif',
       margin: 0,
       padding: 0,
       overflowX: 'hidden'
@@ -571,12 +569,12 @@ const handleSpeak = async () => {
           }}>
             Speak Aloud Korean
           </h2>
-          <p style={{
-            color: '#4b5563',
-            fontSize: '1.125rem'
-          }}>
-            It&apos;s OK Whatever you would
-          </p>
+               <p style={{
+                 color: '#4b5563',
+                 fontSize: '1.125rem'
+               }}>
+                 괜찮아요, 무엇이든 말해보세요
+               </p>
           <div style={{
             marginTop: '1rem',
             display: 'flex',
