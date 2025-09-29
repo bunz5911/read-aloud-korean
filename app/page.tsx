@@ -68,6 +68,15 @@ export default function Home() {
     if (typeof window === 'undefined') return;
     
     console.log('Speech Recognition 초기화 시작');
+    console.log('현재 URL:', window.location.href);
+    console.log('HTTPS 여부:', window.location.protocol === 'https:');
+    
+    // HTTPS 체크 (Speech Recognition은 HTTPS에서만 작동)
+    if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost') {
+      console.log('HTTPS가 필요합니다. Speech Recognition을 사용할 수 없습니다.');
+      setMicState('unsupported');
+      return;
+    }
     
     // Speech Recognition 지원 체크
     const hasSR = 'SpeechRecognition' in window || 'webkitSpeechRecognition' in window;
@@ -87,18 +96,19 @@ export default function Home() {
       // 기본 설정
       rec.lang = 'ko-KR';
       rec.continuous = false;
-      rec.interimResults = false; // 모바일에서는 interimResults를 false로 설정
+      rec.interimResults = false;
       rec.maxAlternatives = 1;
       
       // 모바일 최적화 설정
-      if (typeof window !== 'undefined') {
-        const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        if (isMobile) {
-          console.log('모바일 감지 - 최적화 설정 적용');
-          rec.grammars = null; // 문법 제한 제거
-          rec.serviceURI = undefined; // 서비스 URI 제거
-          rec.continuous = false; // 모바일에서는 continuous를 false로 강제
-        }
+      const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      if (isMobile) {
+        console.log('모바일 감지 - 최적화 설정 적용');
+        rec.grammars = null;
+        rec.serviceURI = undefined;
+        rec.continuous = false;
+        
+        // 모바일에서는 더 간단한 설정
+        rec.lang = 'ko'; // 'ko-KR' 대신 'ko' 사용
       }
       
       recognitionRef.current = rec;
@@ -126,6 +136,12 @@ export default function Home() {
   const handleStartRecording = async () => {
     console.log('녹음 시작 요청, 마이크 상태:', micState);
     
+    // HTTPS 체크
+    if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost') {
+      alert('음성 인식을 위해서는 HTTPS 연결이 필요합니다. 현재 HTTP로 접속되어 있습니다.');
+      return;
+    }
+    
     if (micState !== 'ok') {
       console.log('마이크 권한 없음, 권한 재체크');
       const hasPermission = await checkMicPermission();
@@ -148,7 +164,7 @@ export default function Home() {
       // 마이크 스트림 시작 (모바일 최적화)
       console.log('마이크 스트림 요청');
       const stream = await navigator.mediaDevices.getUserMedia({ 
-        audio: true // 모바일에서는 간단한 설정 사용
+        audio: true
       });
       mediaStreamRef.current = stream;
       console.log('마이크 스트림 성공');
@@ -157,7 +173,7 @@ export default function Home() {
       if (recognitionRef.current) {
         console.log('Speech Recognition 시작');
         
-        // 이벤트 핸들러 재설정 (모바일에서 중요)
+        // 이벤트 핸들러 재설정
         recognitionRef.current.onstart = () => {
           console.log('✅ Speech Recognition 녹음 시작');
         };
@@ -192,9 +208,11 @@ export default function Home() {
             alert('네트워크 오류가 발생했습니다. 인터넷 연결을 확인해주세요.');
           } else if (event.error === 'aborted') {
             console.log('Speech Recognition 중단됨');
+          } else if (event.error === 'service-not-allowed') {
+            alert('음성 인식 서비스가 허용되지 않았습니다. HTTPS 연결을 확인해주세요.');
           } else {
             console.log('기타 오류:', event.error);
-            alert('음성 인식 중 오류가 발생했습니다. 다시 시도해주세요.');
+            alert(`음성 인식 중 오류가 발생했습니다: ${event.error}`);
           }
         };
 
@@ -203,22 +221,22 @@ export default function Home() {
           setIsRecording(false);
         };
 
-        // 모바일에서 안정적인 시작을 위해 약간의 지연
-        setTimeout(() => {
-          try {
-            recognitionRef.current.start();
-            console.log('Speech Recognition start() 호출 완료');
-          } catch (startError) {
-            console.error('Speech Recognition start() 오류:', startError);
-            setIsRecording(false);
-            setAppState('initial');
-          }
-        }, 100);
+        // Speech Recognition 시작
+        try {
+          recognitionRef.current.start();
+          console.log('Speech Recognition start() 호출 완료');
+        } catch (startError) {
+          console.error('Speech Recognition start() 오류:', startError);
+          setIsRecording(false);
+          setAppState('initial');
+          alert('음성 인식을 시작할 수 없습니다. 브라우저를 새로고침해주세요.');
+        }
         
       } else {
         console.error('Speech Recognition 객체 없음');
         setIsRecording(false);
         setAppState('initial');
+        alert('음성 인식이 지원되지 않습니다. 최신 브라우저를 사용해주세요.');
       }
     } catch (error) {
       console.error('녹음 시작 오류:', error);
