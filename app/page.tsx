@@ -1069,20 +1069,80 @@ const handleSpeak = async () => {
                                 <div style={{ textAlign: 'center', marginBottom: '0.75rem' }}>
                                   <p style={{ fontWeight: '600', color: '#9a3412' }}>🤖 Android 사용자</p>
                                 </div>
-                                <div className="flex items-start space-x-2">
-                                  <span className="bg-orange-200 text-orange-800 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">1</span>
-                                  <p>Chrome 주소창의 <span className="font-semibold">🔒 자물쇠 아이콘</span> 클릭</p>
+                                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+                                  <span style={{
+                                    backgroundColor: '#fed7aa',
+                                    color: '#9a3412',
+                                    borderRadius: '50%',
+                                    width: '1.25rem',
+                                    height: '1.25rem',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    fontSize: '0.75rem',
+                                    fontWeight: 'bold',
+                                    flexShrink: 0,
+                                    marginTop: '0.125rem'
+                                  }}>
+                                    1
+                                  </span>
+                                  <p>Chrome 주소창의 <span style={{ fontWeight: '600' }}>🔒 자물쇠 아이콘</span> 클릭</p>
                                 </div>
-                                <div className="flex items-start space-x-2">
-                                  <span className="bg-orange-200 text-orange-800 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">2</span>
-                                  <p>마이크를 <span className="font-semibold text-green-600">허용</span>으로 변경</p>
+                                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+                                  <span style={{
+                                    backgroundColor: '#fed7aa',
+                                    color: '#9a3412',
+                                    borderRadius: '50%',
+                                    width: '1.25rem',
+                                    height: '1.25rem',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    fontSize: '0.75rem',
+                                    fontWeight: 'bold',
+                                    flexShrink: 0,
+                                    marginTop: '0.125rem'
+                                  }}>
+                                    2
+                                  </span>
+                                  <p>마이크를 <span style={{ fontWeight: '600', color: '#16a34a' }}>허용</span>으로 변경</p>
                                 </div>
-                                <div className="flex items-start space-x-2">
-                                  <span className="bg-orange-200 text-orange-800 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">3</span>
-                                  <p>또는 Chrome 메뉴 → <span className="font-semibold">설정</span> → <span className="font-semibold">사이트 설정</span> → <span className="font-semibold">마이크</span></p>
+                                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+                                  <span style={{
+                                    backgroundColor: '#fed7aa',
+                                    color: '#9a3412',
+                                    borderRadius: '50%',
+                                    width: '1.25rem',
+                                    height: '1.25rem',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    fontSize: '0.75rem',
+                                    fontWeight: 'bold',
+                                    flexShrink: 0,
+                                    marginTop: '0.125rem'
+                                  }}>
+                                    3
+                                  </span>
+                                  <p>또는 Chrome 메뉴 → <span style={{ fontWeight: '600' }}>설정</span> → <span style={{ fontWeight: '600' }}>사이트 설정</span> → <span style={{ fontWeight: '600' }}>마이크</span></p>
                                 </div>
-                                <div className="flex items-start space-x-2">
-                                  <span className="bg-orange-200 text-orange-800 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">4</span>
+                                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+                                  <span style={{
+                                    backgroundColor: '#fed7aa',
+                                    color: '#9a3412',
+                                    borderRadius: '50%',
+                                    width: '1.25rem',
+                                    height: '1.25rem',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    fontSize: '0.75rem',
+                                    fontWeight: 'bold',
+                                    flexShrink: 0,
+                                    marginTop: '0.125rem'
+                                  }}>
+                                    4
+                                  </span>
                                   <p>페이지 새로고침 후 다시 시도</p>
                                 </div>
                               </div>
@@ -1090,17 +1150,62 @@ const handleSpeak = async () => {
                           }
                         }
                         return (
-                          <div className="space-y-2">
-                            <div className="flex items-start space-x-2">
-                              <span className="bg-orange-200 text-orange-800 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">1</span>
-                              <p>브라우저 주소창의 <span className="font-semibold">🔒 자물쇠 아이콘</span> 클릭</p>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+                              <span style={{
+                                backgroundColor: '#fed7aa',
+                                color: '#9a3412',
+                                borderRadius: '50%',
+                                width: '1.25rem',
+                                height: '1.25rem',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                fontSize: '0.75rem',
+                                fontWeight: 'bold',
+                                flexShrink: 0,
+                                marginTop: '0.125rem'
+                              }}>
+                                1
+                              </span>
+                              <p>브라우저 주소창의 <span style={{ fontWeight: '600' }}>🔒 자물쇠 아이콘</span> 클릭</p>
                             </div>
-                            <div className="flex items-start space-x-2">
-                              <span className="bg-orange-200 text-orange-800 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">2</span>
-                              <p>마이크 권한을 <span className="font-semibold text-green-600">&quot;허용&quot;</span>으로 변경</p>
+                            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+                              <span style={{
+                                backgroundColor: '#fed7aa',
+                                color: '#9a3412',
+                                borderRadius: '50%',
+                                width: '1.25rem',
+                                height: '1.25rem',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                fontSize: '0.75rem',
+                                fontWeight: 'bold',
+                                flexShrink: 0,
+                                marginTop: '0.125rem'
+                              }}>
+                                2
+                              </span>
+                              <p>마이크 권한을 <span style={{ fontWeight: '600', color: '#16a34a' }}>&quot;허용&quot;</span>으로 변경</p>
                             </div>
-                            <div className="flex items-start space-x-2">
-                              <span className="bg-orange-200 text-orange-800 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">3</span>
+                            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+                              <span style={{
+                                backgroundColor: '#fed7aa',
+                                color: '#9a3412',
+                                borderRadius: '50%',
+                                width: '1.25rem',
+                                height: '1.25rem',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                fontSize: '0.75rem',
+                                fontWeight: 'bold',
+                                flexShrink: 0,
+                                marginTop: '0.125rem'
+                              }}>
+                                3
+                              </span>
                               <p>페이지 새로고침 후 다시 시도</p>
                             </div>
                           </div>
@@ -1108,8 +1213,16 @@ const handleSpeak = async () => {
                       })()}
                     </div>
                     
-                    <div className="mt-4 pt-3 border-t border-orange-200">
-                      <p className="text-xs text-orange-600 mb-3">
+                    <div style={{
+                      marginTop: '1rem',
+                      paddingTop: '0.75rem',
+                      borderTop: '1px solid #fed7aa'
+                    }}>
+                      <p style={{
+                        fontSize: '0.75rem',
+                        color: '#c2410c',
+                        marginBottom: '0.75rem'
+                      }}>
                         💡 <strong>팁:</strong> 권한 설정 후에도 문제가 있다면 브라우저를 완전히 종료하고 다시 열어보세요
                       </p>
                       <button 
@@ -1128,7 +1241,19 @@ const handleSpeak = async () => {
                             alert('💻 PC 상세 가이드:\n\n1️⃣ 브라우저 주소창 왼쪽의 🔒 자물쇠 아이콘을 클릭하세요\n2️⃣ "마이크" 항목을 찾아서 "허용"으로 변경하세요\n3️⃣ 또는 시스템 환경설정 → 보안 및 개인 정보 보호 → 마이크에서 Chrome 허용\n4️⃣ 페이지를 새로고침하세요\n\n💡 여전히 안 된다면 브라우저를 완전히 종료하고 다시 열어보세요');
                           }
                         }}
-                        className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200"
+                        style={{
+                          backgroundColor: '#f97316',
+                          color: '#ffffff',
+                          padding: '0.5rem 1rem',
+                          borderRadius: '0.5rem',
+                          fontSize: '0.875rem',
+                          fontWeight: '500',
+                          border: 'none',
+                          cursor: 'pointer',
+                          transition: 'background-color 0.2s'
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#ea580c'}
+                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#f97316'}
                       >
                         📖 상세 가이드 보기
                       </button>
@@ -1142,60 +1267,258 @@ const handleSpeak = async () => {
 
         <AnimatePresence mode="wait">
           {(appState === 'transcribed' || appState === 'analyzed' || appState === 'practice' || appState === 'final') && (
-            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -30 }} className="space-y-8">
+            <motion.div 
+              initial={{ opacity: 0, y: 30 }} 
+              animate={{ opacity: 1, y: 0 }} 
+              exit={{ opacity: 0, y: -30 }} 
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '2rem'
+              }}
+            >
               {userText && (
-                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
-                  <div className="text-center space-y-3">
-                    <p className="text-sm font-medium text-gray-600">이렇게 이해했어요</p>
-                    <motion.div initial={{ scale: 0.9 }} animate={{ scale: 1 }} className="bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-300 rounded-3xl p-6 shadow-lg">
-                      <p className="text-lg text-blue-800 leading-relaxed">{userText}</p>
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }} 
+                  animate={{ opacity: 1, y: 0 }} 
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '1rem'
+                  }}
+                >
+                  <div style={{
+                    textAlign: 'center',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '0.75rem'
+                  }}>
+                    <p style={{
+                      fontSize: '0.875rem',
+                      fontWeight: '500',
+                      color: '#4b5563'
+                    }}>
+                      이렇게 이해했어요
+                    </p>
+                    <motion.div 
+                      initial={{ scale: 0.9 }} 
+                      animate={{ scale: 1 }} 
+                      style={{
+                        background: 'linear-gradient(to bottom right, #eff6ff, #e0e7ff)',
+                        border: '2px solid #93c5fd',
+                        borderRadius: '1.5rem',
+                        padding: '1.5rem',
+                        boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)'
+                      }}
+                    >
+                      <p style={{
+                        fontSize: '1.125rem',
+                        color: '#1e40af',
+                        lineHeight: '1.625'
+                      }}>
+                        {userText}
+                      </p>
                     </motion.div>
                   </div>
                 </motion.div>
               )}
 
               {appState === 'analyzed' && (
-                <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
-                  <div className="text-center">
-                    <p className="text-xl font-semibold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">이렇게 말하면 더 자연스러워요!</p>
+                <motion.div 
+                  initial={{ opacity: 0, y: 30 }} 
+                  animate={{ opacity: 1, y: 0 }} 
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '1.5rem'
+                  }}
+                >
+                  <div style={{ textAlign: 'center' }}>
+                    <p style={{
+                      fontSize: '1.25rem',
+                      fontWeight: '600',
+                      background: 'linear-gradient(to right, #9333ea, #db2777)',
+                      WebkitBackgroundClip: 'text',
+                      backgroundClip: 'text',
+                      color: 'transparent'
+                    }}>
+                      이렇게 말하면 더 자연스러워요!
+                    </p>
                   </div>
 
                   {/* 말투 선택 */}
-                  <div className="flex justify-center space-x-4 mb-4">
-                    <button onClick={() => setSpeechLevel('banmal')} className={`px-4 py-2 rounded-full text-sm font-semibold shadow ${speechLevel === 'banmal' ? 'bg-pink-500 text-white' : 'bg-gray-200 text-gray-700'}`}>반말</button>
-                    <button onClick={() => setSpeechLevel('jondaetmal')} className={`px-4 py-2 rounded-full text-sm font-semibold shadow ${speechLevel === 'jondaetmal' ? 'bg-pink-500 text-white' : 'bg-gray-200 text-gray-700'}`}>존댓말</button>
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    gap: '1rem',
+                    marginBottom: '1rem'
+                  }}>
+                    <button 
+                      onClick={() => setSpeechLevel('banmal')} 
+                      style={{
+                        padding: '0.5rem 1rem',
+                        borderRadius: '9999px',
+                        fontSize: '0.875rem',
+                        fontWeight: '600',
+                        boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+                        backgroundColor: speechLevel === 'banmal' ? '#ec4899' : '#e5e7eb',
+                        color: speechLevel === 'banmal' ? '#ffffff' : '#374151',
+                        border: 'none',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s'
+                      }}
+                    >
+                      반말
+                    </button>
+                    <button 
+                      onClick={() => setSpeechLevel('jondaetmal')} 
+                      style={{
+                        padding: '0.5rem 1rem',
+                        borderRadius: '9999px',
+                        fontSize: '0.875rem',
+                        fontWeight: '600',
+                        boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+                        backgroundColor: speechLevel === 'jondaetmal' ? '#ec4899' : '#e5e7eb',
+                        color: speechLevel === 'jondaetmal' ? '#ffffff' : '#374151',
+                        border: 'none',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s'
+                      }}
+                    >
+                      존댓말
+                    </button>
                   </div>
 
                   {/* 교정문 + 오류 설명 */}
-                  <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.2 }} className="relative bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-300 rounded-3xl p-6 shadow-xl">
-                    <p className="text-xl text-purple-800 leading-relaxed font-medium">
-                      “{displayed}”
-                      {aiLoading && <span className="ml-2 text-sm text-purple-500">…생각 중</span>}
+                  <motion.div 
+                    initial={{ scale: 0.9, opacity: 0 }} 
+                    animate={{ scale: 1, opacity: 1 }} 
+                    transition={{ delay: 0.2 }} 
+                    style={{
+                      position: 'relative',
+                      background: 'linear-gradient(to bottom right, #faf5ff, #fdf2f8)',
+                      border: '2px solid #c084fc',
+                      borderRadius: '1.5rem',
+                      padding: '1.5rem',
+                      boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
+                    }}
+                  >
+                    <p style={{
+                      fontSize: '1.25rem',
+                      color: '#6b21a8',
+                      lineHeight: '1.625',
+                      fontWeight: '500'
+                    }}>
+                      "{displayed}"
+                      {aiLoading && <span style={{
+                        marginLeft: '0.5rem',
+                        fontSize: '0.875rem',
+                        color: '#a855f7'
+                      }}>…생각 중</span>}
                     </p>
 
                     {/* 오류 설명 (서버 notes 우선, 실패 시 클라 룰 기반) */}
                     {aiNotes.length > 0 && (
-                      <ul className="mt-3 text-sm text-purple-600 list-disc list-inside space-y-1">
+                      <ul style={{
+                        marginTop: '0.75rem',
+                        fontSize: '0.875rem',
+                        color: '#7c3aed',
+                        listStyleType: 'disc',
+                        listStylePosition: 'inside',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '0.25rem'
+                      }}>
                         {aiNotes.map((n, i) => <li key={i}>{n}</li>)}
                       </ul>
                     )}
 
-                    {aiError && <div className="mt-2 text-xs text-rose-500">교정 서버가 불안정해요. 임시로 입력 기반으로 표시했어요. ({aiError})</div>}
+                    {aiError && <div style={{
+                      marginTop: '0.5rem',
+                      fontSize: '0.75rem',
+                      color: '#ef4444'
+                    }}>
+                      교정 서버가 불안정해요. 임시로 입력 기반으로 표시했어요. ({aiError})
+                    </div>}
                   </motion.div>
 
                   {/* 이렇게 읽어요: 버튼 누를 때만 TTS */}
-                  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="flex flex-col items-center space-y-4 pt-4">
-                    <p className="text-lg font-semibold text-gray-700">이렇게 읽어요 👇</p>
+                  <motion.div 
+                    initial={{ opacity: 0, y: 20 }} 
+                    animate={{ opacity: 1, y: 0 }} 
+                    transition={{ delay: 0.4 }} 
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      gap: '1rem',
+                      paddingTop: '1rem'
+                    }}
+                  >
+                    <p style={{
+                      fontSize: '1.125rem',
+                      fontWeight: '600',
+                      color: '#374151'
+                    }}>
+                      이렇게 읽어요 👇
+                    </p>
 
-                    <div className="flex items-center space-x-3">
-                      <select value={voice} onChange={(e) => setVoice(e.target.value)} className="px-3 py-2 rounded-full bg-white border border-gray-200 text-sm shadow-sm" aria-label="TTS Voice">
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.75rem'
+                    }}>
+                      <select 
+                        value={voice} 
+                        onChange={(e) => setVoice(e.target.value)} 
+                        style={{
+                          padding: '0.5rem 0.75rem',
+                          borderRadius: '9999px',
+                          backgroundColor: '#ffffff',
+                          border: '1px solid #d1d5db',
+                          fontSize: '0.875rem',
+                          boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)'
+                        }}
+                        aria-label="TTS Voice"
+                      >
                         <option value="alloy">성우: Alloy</option>
                         <option value="verse">성우: Verse</option>
                         <option value="aria">성우: Aria</option>
                         <option value="nexus">성우: Nexus</option>
                       </select>
 
-                      <button onClick={handleSpeak} disabled={ttsLoading || !displayed} className="bg-gradient-to-r from-teal-500 via-blue-500 to-purple-500 hover:from-teal-600 hover:via-blue-600 hover:to-purple-600 disabled:opacity-60 text-white px-10 py-3 rounded-full text-lg font-semibold shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-200">
+                      <button 
+                        onClick={handleSpeak} 
+                        disabled={ttsLoading || !displayed} 
+                        style={{
+                          background: 'linear-gradient(to right, #14b8a6, #3b82f6, #8b5cf6)',
+                          color: '#ffffff',
+                          padding: '0.75rem 2.5rem',
+                          borderRadius: '9999px',
+                          fontSize: '1.125rem',
+                          fontWeight: '600',
+                          boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+                          border: 'none',
+                          cursor: (ttsLoading || !displayed) ? 'not-allowed' : 'pointer',
+                          transform: 'scale(1)',
+                          transition: 'all 0.2s',
+                          opacity: (ttsLoading || !displayed) ? 0.6 : 1
+                        }}
+                        onMouseEnter={(e) => {
+                          if (!ttsLoading && displayed) {
+                            e.currentTarget.style.background = 'linear-gradient(to right, #0d9488, #2563eb, #7c3aed)';
+                            e.currentTarget.style.boxShadow = '0 25px 50px -12px rgba(0, 0, 0, 0.25)';
+                            e.currentTarget.style.transform = 'scale(1.05)';
+                          }
+                        }}
+                        onMouseLeave={(e) => {
+                          if (!ttsLoading && displayed) {
+                            e.currentTarget.style.background = 'linear-gradient(to right, #14b8a6, #3b82f6, #8b5cf6)';
+                            e.currentTarget.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)';
+                            e.currentTarget.style.transform = 'scale(1)';
+                          }
+                        }}
+                      >
                         {ttsLoading ? '🔊 준비 중…' : '🔊 교정문 읽어주기'}
                       </button>
                     </div>
