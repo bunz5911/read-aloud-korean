@@ -70,11 +70,21 @@ export default function Home() {
   useEffect(() => {
     if (typeof window === 'undefined') return;
     
-    // 모바일 감지
-    const mobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    setIsMobile(mobile);
+    // 모바일 감지 (더 정확한 감지)
+    const userAgent = navigator.userAgent;
+    const mobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    const isSmallScreen = window.innerWidth <= 768;
     
-    console.log('모바일 감지:', mobile);
+    const isMobileDevice = mobile || (isTouchDevice && isSmallScreen);
+    setIsMobile(isMobileDevice);
+    
+    console.log('=== 모바일 감지 디버깅 ===');
+    console.log('User Agent:', userAgent);
+    console.log('User Agent 감지:', mobile);
+    console.log('터치 디바이스:', isTouchDevice);
+    console.log('작은 화면:', isSmallScreen, `(${window.innerWidth}px)`);
+    console.log('최종 모바일 판정:', isMobileDevice);
     console.log('Speech Recognition 초기화 시작');
     console.log('현재 URL:', window.location.href);
     console.log('HTTPS 여부:', window.location.protocol === 'https:');
@@ -98,16 +108,16 @@ export default function Home() {
     
     try {
       // Speech Recognition 설정 (모바일 최적화)
-      const SR: any = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-      const rec = new SR();
+    const SR: any = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const rec = new SR();
       
       // 기본 설정
-      rec.lang = 'ko-KR';
-      rec.continuous = false;
+    rec.lang = 'ko-KR';
+    rec.continuous = false;
       rec.interimResults = false;
       rec.maxAlternatives = 1;
-      
-      // 모바일 최적화 설정
+    
+    // 모바일 최적화 설정
       if (mobile) {
         console.log('모바일 감지 - 최적화 설정 적용');
         rec.grammars = null;
@@ -116,9 +126,9 @@ export default function Home() {
         
         // 모바일에서는 더 간단한 설정
         rec.lang = 'ko'; // 'ko-KR' 대신 'ko' 사용
-      }
-      
-      recognitionRef.current = rec;
+    }
+    
+    recognitionRef.current = rec;
       console.log('Speech Recognition 초기화 완료');
 
       // 마이크 권한 체크
@@ -133,10 +143,10 @@ export default function Home() {
       try { 
         recognitionRef.current?.abort?.(); 
       } catch {}
-      if (mediaStreamRef.current) {
-        mediaStreamRef.current.getTracks().forEach((t) => t.stop());
-      }
-    };
+    if (mediaStreamRef.current) {
+      mediaStreamRef.current.getTracks().forEach((t) => t.stop());
+    }
+  };
   }, []);
 
   // 녹음 시작 (모바일 최적화)
@@ -160,12 +170,12 @@ export default function Home() {
 
     try {
       console.log('녹음 상태 설정');
-      setIsRecording(true);
-      setAppState('recording');
-      setUserText('');
+    setIsRecording(true);
+    setAppState('recording');
+    setUserText('');
       setCorrectedText('');
       setDisplayed('');
-      setAiNotes([]);
+    setAiNotes([]);
       setAiError(null);
 
       // 마이크 스트림 시작 (모바일 최적화)
@@ -217,7 +227,7 @@ export default function Home() {
             console.log('Speech Recognition 중단됨');
           } else if (event.error === 'service-not-allowed') {
             alert('음성 인식 서비스가 허용되지 않았습니다. HTTPS 연결을 확인해주세요.');
-          } else {
+        } else {
             console.log('기타 오류:', event.error);
             alert(`음성 인식 중 오류가 발생했습니다: ${event.error}`);
           }
@@ -234,11 +244,11 @@ export default function Home() {
           console.log('Speech Recognition start() 호출 완료');
         } catch (startError) {
           console.error('Speech Recognition start() 오류:', startError);
-          setIsRecording(false);
+      setIsRecording(false);
           setAppState('initial');
           alert('음성 인식을 시작할 수 없습니다. 브라우저를 새로고침해주세요.');
         }
-        
+
       } else {
         console.error('Speech Recognition 객체 없음');
         setIsRecording(false);
@@ -260,13 +270,13 @@ export default function Home() {
 
     try {
       const response = await fetch('/api/correct', {
-        method: 'POST',
+          method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           text: text,
-          level: speechLevel
+          speechLevel: speechLevel
         }),
       });
 
@@ -292,13 +302,13 @@ export default function Home() {
   };
 
   // TTS 재생
-  const handleSpeak = async () => {
+const handleSpeak = async () => {
     if (!displayed) return;
 
     setTtsLoading(true);
     try {
       const response = await fetch('/api/tts', {
-        method: 'POST',
+      method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -314,23 +324,28 @@ export default function Home() {
 
       const audioBlob = await response.blob();
       const audioUrl = URL.createObjectURL(audioBlob);
-      
-      if (audioRef.current) {
+
+    if (audioRef.current) {
         audioRef.current.src = audioUrl;
         audioRef.current.play();
       }
     } catch (error) {
       console.error('TTS 오류:', error);
       alert('음성 재생에 실패했습니다.');
-    } finally {
-      setTtsLoading(false);
-    }
-  };
+  } finally {
+    setTtsLoading(false);
+  }
+};
 
   // 텍스트 입력 처리
   const handleTextInput = () => {
-    if (!textInput.trim()) return;
+    console.log('handleTextInput 호출됨, textInput:', textInput);
+    if (!textInput.trim()) {
+      console.log('텍스트가 비어있음');
+      return;
+    }
     
+    console.log('텍스트 입력 처리 시작:', textInput);
     setUserText(textInput);
     setAppState('transcribed');
     setTextInput('');
@@ -431,10 +446,10 @@ export default function Home() {
                    '#374151'
           }}>
             MIC {
-              micState === 'ok' ? 'on' :
-              micState === 'denied' ? 'denied' :
-              micState === 'blocked' ? 'blocked' :
-              micState === 'unsupported' ? 'unsupported' :
+              micState === 'ok' ? 'on' : 
+              micState === 'denied' ? 'denied' : 
+              micState === 'blocked' ? 'blocked' : 
+              micState === 'unsupported' ? 'unsupported' : 
               'unknown'
             }
           </span>
@@ -532,30 +547,30 @@ export default function Home() {
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
-            <defs>
-              <linearGradient id="blobGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" style={{ stopColor: isRecording ? '#FF6B9D' : '#E57373' }} />
-                <stop offset="50%" style={{ stopColor: isRecording ? '#C44569' : '#EC407A' }} />
-                <stop offset="100%" style={{ stopColor: isRecording ? '#F8B500' : '#E57373' }} />
-              </linearGradient>
-            </defs>
-            <motion.path
-              d="M60 80C20 60 10 100 30 140C50 180 120 190 180 170C240 150 250 110 230 70C210 30 160 20 120 40C80 60 100 100 60 80Z"
-              fill="url(#blobGradient)"
-              animate={
-                isRecording
-                  ? {
-                      d: [
-                        'M60 80C20 60 10 100 30 140C50 180 120 190 180 170C240 150 250 110 230 70C210 30 160 20 120 40C80 60 100 100 60 80Z',
-                        'M70 90C30 70 20 110 40 150C60 190 130 200 190 180C250 160 260 120 240 80C220 40 170 30 130 50C90 70 110 110 70 90Z',
-                        'M60 80C20 60 10 100 30 140C50 180 120 190 180 170C240 150 250 110 230 70C210 30 160 20 120 40C80 60 100 100 60 80Z',
-                      ],
-                    }
-                  : {}
-              }
-              transition={{ duration: 4, repeat: isRecording ? Infinity : 0, ease: 'easeInOut' }}
-            />
-          </svg>
+              <defs>
+                <linearGradient id="blobGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" style={{ stopColor: isRecording ? '#FF6B9D' : '#E57373' }} />
+                  <stop offset="50%" style={{ stopColor: isRecording ? '#C44569' : '#EC407A' }} />
+                  <stop offset="100%" style={{ stopColor: isRecording ? '#F8B500' : '#E57373' }} />
+                </linearGradient>
+              </defs>
+              <motion.path
+                d="M60 80C20 60 10 100 30 140C50 180 120 190 180 170C240 150 250 110 230 70C210 30 160 20 120 40C80 60 100 100 60 80Z"
+                fill="url(#blobGradient)"
+                animate={
+                  isRecording
+                    ? {
+                        d: [
+                          'M60 80C20 60 10 100 30 140C50 180 120 190 180 170C240 150 250 110 230 70C210 30 160 20 120 40C80 60 100 100 60 80Z',
+                          'M70 90C30 70 20 110 40 150C60 190 130 200 190 180C250 160 260 120 240 80C220 40 170 30 130 50C90 70 110 110 70 90Z',
+                          'M60 80C20 60 10 100 30 140C50 180 120 190 180 170C240 150 250 110 230 70C210 30 160 20 120 40C80 60 100 100 60 80Z',
+                        ],
+                      }
+                    : {}
+                }
+                transition={{ duration: 4, repeat: isRecording ? Infinity : 0, ease: 'easeInOut' }}
+              />
+            </svg>
           <div style={{
             position: 'absolute',
             top: 0,
@@ -566,24 +581,24 @@ export default function Home() {
             alignItems: 'center',
             justifyContent: 'center'
           }}>
-            <motion.div
+              <motion.div 
               style={{
                 position: 'relative',
                 cursor: 'pointer'
               }}
-              animate={isRecording ? { scale: [1, 1.3, 1.1, 1.3, 1], rotate: [0, -5, 5, -3, 0] } : {}}
-              transition={{ duration: 2, repeat: isRecording ? Infinity : 0 }}
+                animate={isRecording ? { scale: [1, 1.3, 1.1, 1.3, 1], rotate: [0, -5, 5, -3, 0] } : {}} 
+                transition={{ duration: 2, repeat: isRecording ? Infinity : 0 }}
               onClick={handleStartRecording}
-              onTouchStart={(e) => {
-                e.currentTarget.style.transform = 'scale(0.95)';
-              }}
-              onTouchEnd={(e) => {
-                e.currentTarget.style.transform = '';
-              }}
-              style={{ WebkitTapHighlightColor: 'transparent' }}
-              title="마이크를 클릭하여 녹음 시작"
-            >
-              <Mic
+                onTouchStart={(e) => {
+                  e.currentTarget.style.transform = 'scale(0.95)';
+                }}
+                onTouchEnd={(e) => {
+                  e.currentTarget.style.transform = '';
+                }}
+                style={{ WebkitTapHighlightColor: 'transparent' }}
+                title="마이크를 클릭하여 녹음 시작"
+              >
+                <Mic 
                 style={{
                   position: 'relative',
                   width: '3.5rem',
@@ -594,10 +609,10 @@ export default function Home() {
                   opacity: micState === 'denied' || micState === 'blocked' ? 0.5 : 1,
                   cursor: micState === 'denied' || micState === 'blocked' ? 'not-allowed' : 'pointer'
                 }}
-                strokeWidth={2.5}
-              />
-              {!isRecording && micState !== 'denied' && micState !== 'blocked' && (
-                <motion.div
+                  strokeWidth={2.5} 
+                />
+                {!isRecording && micState !== 'denied' && micState !== 'blocked' && (
+                  <motion.div
                   style={{
                     position: 'absolute',
                     top: 0,
@@ -607,13 +622,13 @@ export default function Home() {
                     borderRadius: '50%',
                     border: '2px solid rgba(255, 255, 255, 0.3)'
                   }}
-                  animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.6, 0.3] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                />
-              )}
-            </motion.div>
-          </div>
-        </motion.div>
+                    animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.6, 0.3] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  />
+                )}
+              </motion.div>
+            </div>
+          </motion.div>
       </div>
 
       {/* Buttons */}
@@ -634,7 +649,7 @@ export default function Home() {
           }}>
             {isRecording ? '🎤 Recording...' : 'Ready to record'}
           </span>
-          {!isRecording && micState !== 'denied' && micState !== 'blocked' && (
+              {!isRecording && micState !== 'denied' && micState !== 'blocked' && (
             <p style={{
               fontSize: '0.875rem',
               color: '#4b5563',
@@ -642,8 +657,8 @@ export default function Home() {
             }}>
               마이크 아이콘을 클릭하거나 아래 버튼을 눌러주세요
             </p>
-          )}
-        </div>
+              )}
+            </div>
 
         {/* Again Button */}
         <button
@@ -672,10 +687,10 @@ export default function Home() {
           aria-label="Again"
           title="Again"
         >
-          <span>🔄 Again</span>
-        </button>
+              <span>🔄 Again</span>
+            </button>
 
-        {!isRecording && appState === 'initial' && (
+            {!isRecording && appState === 'initial' && (
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
@@ -687,56 +702,21 @@ export default function Home() {
               gap: '1rem'
             }}
           >
-            <button
-              onClick={handleStartRecording}
-              onTouchStart={(e) => {
-                e.currentTarget.style.transform = 'scale(0.95)';
-              }}
-              onTouchEnd={(e) => {
-                e.currentTarget.style.transform = '';
-              }}
-              disabled={micState === 'denied' || micState === 'blocked'}
-              style={{
-                background: (micState === 'denied' || micState === 'blocked')
-                  ? 'linear-gradient(to right, #9ca3af, #6b7280, #4b5563)'
-                  : 'linear-gradient(to right, #ec4899, #ef4444, #f97316)',
-                color: '#ffffff',
-                padding: '0.75rem 2rem',
-                borderRadius: '9999px',
-                fontSize: '1.125rem',
-                fontWeight: '600',
-                boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
-                border: 'none',
-                cursor: (micState === 'denied' || micState === 'blocked') ? 'not-allowed' : 'pointer',
-                transform: 'scale(1)',
-                transition: 'all 0.2s',
-                WebkitTapHighlightColor: 'transparent',
-                touchAction: 'manipulation'
-              }}
-              onMouseEnter={(e) => {
-                if (micState !== 'denied' && micState !== 'blocked') {
-                  e.currentTarget.style.background = 'linear-gradient(to right, #db2777, #dc2626, #ea580c)';
-                  e.currentTarget.style.boxShadow = '0 25px 50px -12px rgba(0, 0, 0, 0.25)';
-                  e.currentTarget.style.transform = 'scale(1.05)';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (micState !== 'denied' && micState !== 'blocked') {
-                  e.currentTarget.style.background = 'linear-gradient(to right, #ec4899, #ef4444, #f97316)';
-                  e.currentTarget.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)';
-                  e.currentTarget.style.transform = 'scale(1)';
-                }
-              }}
-            >
-              🚀 Let&apos;s Go!
-            </button>
-
-            {/* 모바일에서 텍스트 입력 버튼 */}
-            {isMobile && (
-              <button
-                onClick={() => setShowTextInput(!showTextInput)}
+            {/* PC에서는 음성 입력, 모바일에서는 텍스트 입력만 표시 */}
+            {!isMobile ? (
+              <button 
+                onClick={handleStartRecording} 
+                onTouchStart={(e) => {
+                  e.currentTarget.style.transform = 'scale(0.95)';
+                }}
+                onTouchEnd={(e) => {
+                  e.currentTarget.style.transform = '';
+                }}
+                disabled={micState === 'denied' || micState === 'blocked'}
                 style={{
-                  background: 'linear-gradient(to right, #3b82f6, #1d4ed8)',
+                  background: (micState === 'denied' || micState === 'blocked')
+                    ? 'linear-gradient(to right, #9ca3af, #6b7280, #4b5563)'
+                    : 'linear-gradient(to right, #ec4899, #ef4444, #f97316)',
                   color: '#ffffff',
                   padding: '0.75rem 2rem',
                   borderRadius: '9999px',
@@ -744,32 +724,53 @@ export default function Home() {
                   fontWeight: '600',
                   boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
                   border: 'none',
-                  cursor: 'pointer',
+                  cursor: (micState === 'denied' || micState === 'blocked') ? 'not-allowed' : 'pointer',
                   transform: 'scale(1)',
                   transition: 'all 0.2s',
                   WebkitTapHighlightColor: 'transparent',
                   touchAction: 'manipulation'
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = 'linear-gradient(to right, #2563eb, #1e40af)';
-                  e.currentTarget.style.boxShadow = '0 25px 50px -12px rgba(0, 0, 0, 0.25)';
-                  e.currentTarget.style.transform = 'scale(1.05)';
+                  if (micState !== 'denied' && micState !== 'blocked') {
+                    e.currentTarget.style.background = 'linear-gradient(to right, #db2777, #dc2626, #ea580c)';
+                    e.currentTarget.style.boxShadow = '0 25px 50px -12px rgba(0, 0, 0, 0.25)';
+                    e.currentTarget.style.transform = 'scale(1.05)';
+                  }
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.background = 'linear-gradient(to right, #3b82f6, #1d4ed8)';
-                  e.currentTarget.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)';
-                  e.currentTarget.style.transform = 'scale(1)';
+                  if (micState !== 'denied' && micState !== 'blocked') {
+                    e.currentTarget.style.background = 'linear-gradient(to right, #ec4899, #ef4444, #f97316)';
+                    e.currentTarget.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)';
+                    e.currentTarget.style.transform = 'scale(1)';
+                  }
                 }}
               >
-                📝 텍스트로 입력하기
+                🚀 Let&apos;s Go!
               </button>
+            ) : (
+              <div style={{
+                width: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '1rem'
+              }}>
+                <p style={{
+                  fontSize: '1rem',
+                  color: '#6b7280',
+                  textAlign: 'center',
+                  margin: 0
+                }}>
+                  📱 모바일에서는 텍스트로 입력해주세요
+                </p>
+              </div>
             )}
           </motion.div>
         )}
       </motion.div>
 
       {/* 모바일 텍스트 입력 필드 */}
-      {isMobile && showTextInput && (
+      {isMobile && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -892,10 +893,10 @@ export default function Home() {
       )}
 
       {/* Permission Guide */}
-      {(micState === 'denied' || micState === 'blocked') && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
+                {(micState === 'denied' || micState === 'blocked') && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10 }} 
+                    animate={{ opacity: 1, y: 0 }} 
           style={{
             background: 'linear-gradient(to bottom right, #fff7ed, #fef2f2)',
             border: '2px solid #fb923c',
@@ -923,25 +924,25 @@ export default function Home() {
             }}>
               아래 단계를 따라 권한을 허용해주세요
             </p>
-          </div>
-
+                    </div>
+                    
           <div style={{
             fontSize: '0.875rem',
             color: '#9a3412',
             textAlign: 'left'
           }}>
-            {(() => {
+                      {(() => {
               const isMobile = typeof window !== 'undefined' ? /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) : false;
               const isIOS = typeof window !== 'undefined' ? /iPad|iPhone|iPod/.test(navigator.userAgent) : false;
               const isAndroid = typeof window !== 'undefined' ? /Android/.test(navigator.userAgent) : false;
-
-              if (isMobile) {
-                if (isIOS) {
-                  return (
+                        
+                        if (isMobile) {
+                          if (isIOS) {
+                            return (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                       <div style={{ textAlign: 'center', marginBottom: '0.75rem' }}>
                         <p style={{ fontWeight: '600', color: '#9a3412' }}>📱 iPhone/iPad 사용자</p>
-                      </div>
+                                </div>
                       <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
                         <span style={{
                           backgroundColor: '#fed7aa',
@@ -960,7 +961,7 @@ export default function Home() {
                           1
                         </span>
                         <p><span style={{ fontWeight: '600' }}>설정</span> 앱 열기</p>
-                      </div>
+                                </div>
                       <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
                         <span style={{
                           backgroundColor: '#fed7aa',
@@ -979,7 +980,7 @@ export default function Home() {
                           2
                         </span>
                         <p><span style={{ fontWeight: '600' }}>Safari</span> 선택</p>
-                      </div>
+                                </div>
                       <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
                         <span style={{
                           backgroundColor: '#fed7aa',
@@ -998,7 +999,7 @@ export default function Home() {
                           3
                         </span>
                         <p><span style={{ fontWeight: '600' }}>웹사이트 설정</span> → <span style={{ fontWeight: '600' }}>마이크</span></p>
-                      </div>
+                                </div>
                       <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
                         <span style={{
                           backgroundColor: '#fed7aa',
@@ -1017,7 +1018,7 @@ export default function Home() {
                           4
                         </span>
                         <p>이 사이트를 <span style={{ fontWeight: '600', color: '#16a34a' }}>허용</span>으로 변경</p>
-                      </div>
+                                </div>
                       <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
                         <span style={{
                           backgroundColor: '#fed7aa',
@@ -1035,16 +1036,16 @@ export default function Home() {
                         }}>
                           5
                         </span>
-                        <p>Safari로 돌아가서 페이지 새로고침</p>
-                      </div>
-                    </div>
-                  );
-                } else if (isAndroid) {
-                  return (
+                                  <p>Safari로 돌아가서 페이지 새로고침</p>
+                                </div>
+                              </div>
+                            );
+                          } else if (isAndroid) {
+                            return (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                       <div style={{ textAlign: 'center', marginBottom: '0.75rem' }}>
                         <p style={{ fontWeight: '600', color: '#9a3412' }}>🤖 Android 사용자</p>
-                      </div>
+                                </div>
                       <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
                         <span style={{
                           backgroundColor: '#fed7aa',
@@ -1063,7 +1064,7 @@ export default function Home() {
                           1
                         </span>
                         <p>Chrome 주소창의 <span style={{ fontWeight: '600' }}>🔒 자물쇠 아이콘</span> 클릭</p>
-                      </div>
+                                </div>
                       <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
                         <span style={{
                           backgroundColor: '#fed7aa',
@@ -1082,7 +1083,7 @@ export default function Home() {
                           2
                         </span>
                         <p>마이크를 <span style={{ fontWeight: '600', color: '#16a34a' }}>허용</span>으로 변경</p>
-                      </div>
+                                </div>
                       <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
                         <span style={{
                           backgroundColor: '#fed7aa',
@@ -1101,7 +1102,7 @@ export default function Home() {
                           3
                         </span>
                         <p>또는 Chrome 메뉴 → <span style={{ fontWeight: '600' }}>설정</span> → <span style={{ fontWeight: '600' }}>사이트 설정</span> → <span style={{ fontWeight: '600' }}>마이크</span></p>
-                      </div>
+                                </div>
                       <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
                         <span style={{
                           backgroundColor: '#fed7aa',
@@ -1119,14 +1120,14 @@ export default function Home() {
                         }}>
                           4
                         </span>
-                        <p>페이지 새로고침 후 다시 시도</p>
-                      </div>
-                    </div>
-                  );
-                }
-              }
+                                  <p>페이지 새로고침 후 다시 시도</p>
+                                </div>
+                              </div>
+                            );
+                          }
+                        }
               
-              return (
+                        return (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                   <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
                     <span style={{
@@ -1146,7 +1147,7 @@ export default function Home() {
                       1
                     </span>
                     <p>브라우저 주소창의 <span style={{ fontWeight: '600' }}>🔒 자물쇠 아이콘</span> 클릭</p>
-                  </div>
+                            </div>
                   <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
                     <span style={{
                       backgroundColor: '#fed7aa',
@@ -1165,7 +1166,7 @@ export default function Home() {
                       2
                     </span>
                     <p>마이크 권한을 <span style={{ fontWeight: '600', color: '#16a34a' }}>&quot;허용&quot;</span>으로 변경</p>
-                  </div>
+                            </div>
                   <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
                     <span style={{
                       backgroundColor: '#fed7aa',
@@ -1183,18 +1184,18 @@ export default function Home() {
                     }}>
                       3
                     </span>
-                    <p>페이지 새로고침 후 다시 시도</p>
-                  </div>
-                </div>
-              );
-            })()}
-          </div>
-        </motion.div>
-      )}
+                              <p>페이지 새로고침 후 다시 시도</p>
+                            </div>
+                          </div>
+                        );
+                      })()}
+                    </div>
+                  </motion.div>
+                )}
 
       {/* Results */}
       <AnimatePresence>
-        {(appState === 'transcribed' || appState === 'analyzed' || appState === 'practice' || appState === 'final') && (
+          {(appState === 'transcribed' || appState === 'analyzed' || appState === 'practice' || appState === 'final') && (
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -1207,7 +1208,7 @@ export default function Home() {
             }}
           >
             {/* User Text */}
-            {userText && (
+              {userText && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -1248,13 +1249,13 @@ export default function Home() {
                     }}>
                       {userText}
                     </p>
-                  </motion.div>
-                </div>
-              </motion.div>
-            )}
+                    </motion.div>
+                  </div>
+                </motion.div>
+              )}
 
             {/* Correction Result */}
-            {appState === 'analyzed' && (
+              {appState === 'analyzed' && (
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -1275,7 +1276,7 @@ export default function Home() {
                   }}>
                     이렇게 말하면 더 자연스러워요!
                   </p>
-                </div>
+                  </div>
 
                 {/* Speech Level Selection */}
                 <div style={{
@@ -1318,7 +1319,7 @@ export default function Home() {
                   >
                     존댓말
                   </button>
-                </div>
+                  </div>
 
                 {/* Corrected Text */}
                 <motion.div
@@ -1349,7 +1350,7 @@ export default function Home() {
                   </p>
 
                   {/* AI Notes */}
-                  {aiNotes.length > 0 && (
+                    {aiNotes.length > 0 && (
                     <ul style={{
                       marginTop: '0.75rem',
                       fontSize: '0.875rem',
@@ -1360,9 +1361,9 @@ export default function Home() {
                       flexDirection: 'column',
                       gap: '0.25rem'
                     }}>
-                      {aiNotes.map((n, i) => <li key={i}>{n}</li>)}
-                    </ul>
-                  )}
+                        {aiNotes.map((n, i) => <li key={i}>{n}</li>)}
+                      </ul>
+                    )}
 
                   {aiError && <div style={{
                     marginTop: '0.5rem',
@@ -1371,7 +1372,7 @@ export default function Home() {
                   }}>
                     교정 서버가 불안정해요. 임시로 입력 기반으로 표시했어요. ({aiError})
                   </div>}
-                </motion.div>
+                  </motion.div>
               </motion.div>
             )}
 
@@ -1414,11 +1415,11 @@ export default function Home() {
                   }}
                   aria-label="TTS Voice"
                 >
-                  <option value="alloy">성우: Alloy</option>
-                  <option value="verse">성우: Verse</option>
-                  <option value="aria">성우: Aria</option>
-                  <option value="nexus">성우: Nexus</option>
-                </select>
+                        <option value="alloy">성우: Alloy</option>
+                        <option value="verse">성우: Verse</option>
+                        <option value="aria">성우: Aria</option>
+                        <option value="nexus">성우: Nexus</option>
+                      </select>
 
                 <button
                   onClick={handleSpeak}
@@ -1452,15 +1453,15 @@ export default function Home() {
                     }
                   }}
                 >
-                  {ttsLoading ? '🔊 준비 중…' : '🔊 교정문 읽어주기'}
-                </button>
-              </div>
+                        {ttsLoading ? '🔊 준비 중…' : '🔊 교정문 읽어주기'}
+                      </button>
+                    </div>
 
-              <audio ref={audioRef} hidden />
+                    <audio ref={audioRef} hidden />
+                  </motion.div>
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          )}
+        </AnimatePresence>
     </div>
   );
 }
