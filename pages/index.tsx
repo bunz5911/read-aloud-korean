@@ -263,6 +263,7 @@ export default function Home() {
 
   // AI 교정 요청
   const handleCorrection = async (text: string) => {
+    console.log('교정 요청 - 텍스트:', text, '말투:', speechLevel);
     setAiLoading(true);
     setAiError(null);
 
@@ -1285,7 +1286,10 @@ const handleSpeak = async () => {
                   marginBottom: '1rem'
                 }}>
                   <button
-                    onClick={() => setSpeechLevel('banmal')}
+                    onClick={() => {
+                      console.log('반말 버튼 클릭됨');
+                      setSpeechLevel('banmal');
+                    }}
                     style={{
                       padding: '0.5rem 1rem',
                       borderRadius: '9999px',
@@ -1302,7 +1306,10 @@ const handleSpeak = async () => {
                     반말
                   </button>
                   <button
-                    onClick={() => setSpeechLevel('jondaetmal')}
+                    onClick={() => {
+                      console.log('존댓말 버튼 클릭됨');
+                      setSpeechLevel('jondaetmal');
+                    }}
                     style={{
                       padding: '0.5rem 1rem',
                       borderRadius: '9999px',
