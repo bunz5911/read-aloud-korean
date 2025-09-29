@@ -546,24 +546,96 @@ const handleSpeak = async () => {
       </div>
 
       {/* Title */}
-      <div className="relative z-10 px-6 pb-8">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="text-center mb-10">
-          <h2 className="text-4xl font-bold mb-3 bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 bg-clip-text text-transparent">Speak Aloud Korean</h2>
-          <p className="text-gray-600 text-lg">It&apos;s OK Whatever you would</p>
-          <div className="mt-4 flex justify-center">
-            <div className="flex space-x-1">
-              <div className="w-2 h-2 bg-pink-400 rounded-full"></div>
-              <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
-              <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+      <div style={{
+        position: 'relative',
+        zIndex: 10,
+        padding: '0 1.5rem 2rem 1.5rem'
+      }}>
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }} 
+          animate={{ opacity: 1, y: 0 }} 
+          transition={{ delay: 0.2 }} 
+          style={{
+            textAlign: 'center',
+            marginBottom: '2.5rem'
+          }}
+        >
+          <h2 style={{
+            fontSize: '2.25rem',
+            fontWeight: 'bold',
+            marginBottom: '0.75rem',
+            background: 'linear-gradient(to right, #db2777, #7c3aed, #2563eb)',
+            WebkitBackgroundClip: 'text',
+            backgroundClip: 'text',
+            color: 'transparent'
+          }}>
+            Speak Aloud Korean
+          </h2>
+          <p style={{
+            color: '#4b5563',
+            fontSize: '1.125rem'
+          }}>
+            It&apos;s OK Whatever you would
+          </p>
+          <div style={{
+            marginTop: '1rem',
+            display: 'flex',
+            justifyContent: 'center'
+          }}>
+            <div style={{
+              display: 'flex',
+              gap: '0.25rem'
+            }}>
+              <div style={{
+                width: '0.5rem',
+                height: '0.5rem',
+                backgroundColor: '#f472b6',
+                borderRadius: '50%'
+              }}></div>
+              <div style={{
+                width: '0.5rem',
+                height: '0.5rem',
+                backgroundColor: '#c084fc',
+                borderRadius: '50%'
+              }}></div>
+              <div style={{
+                width: '0.5rem',
+                height: '0.5rem',
+                backgroundColor: '#60a5fa',
+                borderRadius: '50%'
+              }}></div>
             </div>
           </div>
         </motion.div>
 
         {/* Recorder + Buttons */}
-        <div className="flex flex-col items-center mb-10">
-          <motion.div className="relative w-72 h-56 mb-6" animate={isRecording ? { scale: [1, 1.08, 1.02, 1.08, 1], rotate: [0, 2, -2, 1, 0] } : {}} transition={{ duration: 2, repeat: isRecording ? Infinity : 0 }}>
-            {/* blob & mic visuals (생략 없이 유지) */}
-            <svg viewBox="0 0 260 200" className="w-full h-full drop-shadow-xl" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          marginBottom: '2.5rem'
+        }}>
+          <motion.div 
+            style={{
+              position: 'relative',
+              width: '18rem',
+              height: '14rem',
+              marginBottom: '1.5rem'
+            }}
+            animate={isRecording ? { scale: [1, 1.08, 1.02, 1.08, 1], rotate: [0, 2, -2, 1, 0] } : {}} 
+            transition={{ duration: 2, repeat: isRecording ? Infinity : 0 }}
+          >
+            {/* blob & mic visuals */}
+            <svg 
+              viewBox="0 0 260 200" 
+              style={{
+                width: '100%',
+                height: '100%',
+                filter: 'drop-shadow(0 25px 25px rgba(0, 0, 0, 0.15))'
+              }} 
+              fill="none" 
+              xmlns="http://www.w3.org/2000/svg"
+            >
               <defs>
                 <linearGradient id="blobGradient" x1="0%" y1="0%" x2="100%" y2="100%">
                   <stop offset="0%" style={{ stopColor: isRecording ? '#FF6B9D' : '#E57373' }} />
@@ -588,9 +660,21 @@ const handleSpeak = async () => {
                 transition={{ duration: 4, repeat: isRecording ? Infinity : 0, ease: 'easeInOut' }}
               />
             </svg>
-            <div className="absolute inset-0 flex items-center justify-center">
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              right: 0,
+              bottom: 0,
+              left: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
               <motion.div 
-                className="relative cursor-pointer" 
+                style={{
+                  position: 'relative',
+                  cursor: 'pointer'
+                }}
                 animate={isRecording ? { scale: [1, 1.3, 1.1, 1.3, 1], rotate: [0, -5, 5, -3, 0] } : {}} 
                 transition={{ duration: 2, repeat: isRecording ? Infinity : 0 }}
                 onClick={(e) => {
@@ -620,17 +704,30 @@ const handleSpeak = async () => {
                 title="마이크를 클릭하여 녹음 시작"
               >
                 <Mic 
-                  className={`relative w-14 h-14 text-white drop-shadow-lg transition-all duration-200 ${
-                    micState === 'denied' || micState === 'blocked' 
-                      ? 'opacity-50 cursor-not-allowed' 
-                      : 'hover:scale-110 active:scale-95'
-                  }`} 
+                  style={{
+                    position: 'relative',
+                    width: '3.5rem',
+                    height: '3.5rem',
+                    color: '#ffffff',
+                    filter: 'drop-shadow(0 10px 8px rgba(0, 0, 0, 0.04))',
+                    transition: 'all 0.2s',
+                    opacity: micState === 'denied' || micState === 'blocked' ? 0.5 : 1,
+                    cursor: micState === 'denied' || micState === 'blocked' ? 'not-allowed' : 'pointer'
+                  }}
                   strokeWidth={2.5} 
                 />
                 {/* 클릭 가능하다는 것을 나타내는 시각적 힌트 */}
                 {!isRecording && micState !== 'denied' && micState !== 'blocked' && (
                   <motion.div
-                    className="absolute inset-0 rounded-full border-2 border-white/30"
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      right: 0,
+                      bottom: 0,
+                      left: 0,
+                      borderRadius: '50%',
+                      border: '2px solid rgba(255, 255, 255, 0.3)'
+                    }}
                     animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.6, 0.3] }}
                     transition={{ duration: 2, repeat: Infinity }}
                   />
@@ -639,21 +736,76 @@ const handleSpeak = async () => {
             </div>
           </motion.div>
 
-          <motion.div className="flex flex-col items-center space-y-3" animate={isRecording ? { y: [0, -5, 0] } : {}} transition={{ duration: 2, repeat: isRecording ? Infinity : 0 }}>
-            <div className="text-center">
-              <span className="text-xl font-semibold">{isRecording ? '🎤 Recording...' : 'Ready to record'}</span>
+          <motion.div 
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: '0.75rem'
+            }}
+            animate={isRecording ? { y: [0, -5, 0] } : {}} 
+            transition={{ duration: 2, repeat: isRecording ? Infinity : 0 }}
+          >
+            <div style={{ textAlign: 'center' }}>
+              <span style={{
+                fontSize: '1.25rem',
+                fontWeight: '600'
+              }}>
+                {isRecording ? '🎤 Recording...' : 'Ready to record'}
+              </span>
               {!isRecording && micState !== 'denied' && micState !== 'blocked' && (
-                <p className="text-sm text-gray-600 mt-1">마이크 아이콘을 클릭하거나 아래 버튼을 눌러주세요</p>
+                <p style={{
+                  fontSize: '0.875rem',
+                  color: '#4b5563',
+                  marginTop: '0.25rem'
+                }}>
+                  마이크 아이콘을 클릭하거나 아래 버튼을 눌러주세요
+                </p>
               )}
             </div>
 
             {/* 🔄 Again */}
-            <button onClick={handleAgain} disabled={isRecording} className="flex items-center space-x-2 text-sm text-blue-600 hover:text-blue-800 disabled:opacity-50" aria-label="Again" title="Again">
+            <button 
+              onClick={handleAgain} 
+              disabled={isRecording} 
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                fontSize: '0.875rem',
+                color: '#2563eb',
+                background: 'none',
+                border: 'none',
+                cursor: isRecording ? 'not-allowed' : 'pointer',
+                padding: '0.5rem',
+                borderRadius: '0.375rem',
+                transition: 'color 0.2s',
+                opacity: isRecording ? 0.5 : 1
+              }}
+              onMouseEnter={(e) => {
+                if (!isRecording) e.currentTarget.style.color = '#1d4ed8';
+              }}
+              onMouseLeave={(e) => {
+                if (!isRecording) e.currentTarget.style.color = '#2563eb';
+              }}
+              aria-label="Again" 
+              title="Again"
+            >
               <span>🔄 Again</span>
             </button>
 
             {!isRecording && appState === 'initial' && (
-              <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', delay: 0.2 }} className="flex flex-col items-center space-y-4">
+              <motion.div 
+                initial={{ scale: 0 }} 
+                animate={{ scale: 1 }} 
+                transition={{ type: 'spring', delay: 0.2 }} 
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: '1rem'
+                }}
+              >
                 <button 
                   onClick={handleStartRecording} 
                   onTouchStart={(e) => {
@@ -664,8 +816,37 @@ const handleSpeak = async () => {
                     e.currentTarget.style.transform = '';
                   }}
                   disabled={micState === 'denied' || micState === 'blocked'}
-                  className="bg-gradient-to-r from-pink-500 via-red-500 to-orange-500 hover:from-pink-600 hover:via-red-600 hover:to-orange-600 disabled:from-gray-400 disabled:via-gray-500 disabled:to-gray-600 text-white px-8 py-3 rounded-full text-lg font-semibold shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-200 disabled:transform-none disabled:cursor-not-allowed active:scale-95 touch-manipulation"
-                  style={{ WebkitTapHighlightColor: 'transparent' }}
+                  style={{
+                    background: (micState === 'denied' || micState === 'blocked')
+                      ? 'linear-gradient(to right, #9ca3af, #6b7280, #4b5563)'
+                      : 'linear-gradient(to right, #ec4899, #ef4444, #f97316)',
+                    color: '#ffffff',
+                    padding: '0.75rem 2rem',
+                    borderRadius: '9999px',
+                    fontSize: '1.125rem',
+                    fontWeight: '600',
+                    boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+                    border: 'none',
+                    cursor: (micState === 'denied' || micState === 'blocked') ? 'not-allowed' : 'pointer',
+                    transform: 'scale(1)',
+                    transition: 'all 0.2s',
+                    WebkitTapHighlightColor: 'transparent',
+                    touchAction: 'manipulation'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (micState !== 'denied' && micState !== 'blocked') {
+                      e.currentTarget.style.background = 'linear-gradient(to right, #db2777, #dc2626, #ea580c)';
+                      e.currentTarget.style.boxShadow = '0 25px 50px -12px rgba(0, 0, 0, 0.25)';
+                      e.currentTarget.style.transform = 'scale(1.05)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (micState !== 'denied' && micState !== 'blocked') {
+                      e.currentTarget.style.background = 'linear-gradient(to right, #ec4899, #ef4444, #f97316)';
+                      e.currentTarget.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)';
+                      e.currentTarget.style.transform = 'scale(1)';
+                    }
+                  }}
                 >
                   🚀 Let&apos;s Go!
                 </button>
