@@ -22,6 +22,9 @@ export default function Home() {
   const [speechLevel, setSpeechLevel] = useState<SpeechLevel>('banmal');
   const [voice, setVoice] = useState('alloy');
   const [ttsLoading, setTtsLoading] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [showTextInput, setShowTextInput] = useState(false);
+  const [textInput, setTextInput] = useState('');
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // Refs
@@ -63,10 +66,15 @@ export default function Home() {
     }
   };
 
-  // Speech Recognition 초기화 (모바일 최적화)
+  // 모바일 감지 및 Speech Recognition 초기화
   useEffect(() => {
     if (typeof window === 'undefined') return;
     
+    // 모바일 감지
+    const mobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    setIsMobile(mobile);
+    
+    console.log('모바일 감지:', mobile);
     console.log('Speech Recognition 초기화 시작');
     console.log('현재 URL:', window.location.href);
     console.log('HTTPS 여부:', window.location.protocol === 'https:');
@@ -100,8 +108,7 @@ export default function Home() {
       rec.maxAlternatives = 1;
       
       // 모바일 최적화 설정
-      const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-      if (isMobile) {
+      if (mobile) {
         console.log('모바일 감지 - 최적화 설정 적용');
         rec.grammars = null;
         rec.serviceURI = undefined;
@@ -320,6 +327,19 @@ export default function Home() {
     }
   };
 
+  // 텍스트 입력 처리
+  const handleTextInput = () => {
+    if (!textInput.trim()) return;
+    
+    setUserText(textInput);
+    setAppState('transcribed');
+    setTextInput('');
+    setShowTextInput(false);
+    
+    // AI 교정 요청
+    handleCorrection(textInput);
+  };
+
   // 다시 시작
   const handleAgain = () => {
     setAppState('initial');
@@ -329,6 +349,8 @@ export default function Home() {
     setAiNotes([]);
     setAiError(null);
     setIsRecording(false);
+    setShowTextInput(false);
+    setTextInput('');
   };
 
   return (
@@ -708,9 +730,166 @@ export default function Home() {
             >
               🚀 Let&apos;s Go!
             </button>
+
+            {/* 모바일에서 텍스트 입력 버튼 */}
+            {isMobile && (
+              <button
+                onClick={() => setShowTextInput(!showTextInput)}
+                style={{
+                  background: 'linear-gradient(to right, #3b82f6, #1d4ed8)',
+                  color: '#ffffff',
+                  padding: '0.75rem 2rem',
+                  borderRadius: '9999px',
+                  fontSize: '1.125rem',
+                  fontWeight: '600',
+                  boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+                  border: 'none',
+                  cursor: 'pointer',
+                  transform: 'scale(1)',
+                  transition: 'all 0.2s',
+                  WebkitTapHighlightColor: 'transparent',
+                  touchAction: 'manipulation'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'linear-gradient(to right, #2563eb, #1e40af)';
+                  e.currentTarget.style.boxShadow = '0 25px 50px -12px rgba(0, 0, 0, 0.25)';
+                  e.currentTarget.style.transform = 'scale(1.05)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'linear-gradient(to right, #3b82f6, #1d4ed8)';
+                  e.currentTarget.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)';
+                  e.currentTarget.style.transform = 'scale(1)';
+                }}
+              >
+                📝 텍스트로 입력하기
+              </button>
+            )}
           </motion.div>
         )}
       </motion.div>
+
+      {/* 모바일 텍스트 입력 필드 */}
+      {isMobile && showTextInput && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          style={{
+            padding: '0 1.5rem 2rem 1.5rem',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '1rem'
+          }}
+        >
+          <div style={{
+            background: 'linear-gradient(to bottom right, #f0f9ff, #e0f2fe)',
+            border: '2px solid #0ea5e9',
+            borderRadius: '1rem',
+            padding: '1.5rem',
+            boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)'
+          }}>
+            <p style={{
+              fontSize: '1rem',
+              fontWeight: '600',
+              color: '#0c4a6e',
+              marginBottom: '1rem',
+              textAlign: 'center'
+            }}>
+              📝 한국어를 직접 입력해주세요
+            </p>
+            <textarea
+              value={textInput}
+              onChange={(e) => setTextInput(e.target.value)}
+              placeholder="예: 안녕하세요, 오늘 날씨가 좋네요"
+              style={{
+                width: '100%',
+                minHeight: '100px',
+                padding: '0.75rem',
+                borderRadius: '0.5rem',
+                border: '1px solid #bae6fd',
+                fontSize: '1rem',
+                fontFamily: 'inherit',
+                resize: 'vertical',
+                outline: 'none',
+                backgroundColor: '#ffffff',
+                color: '#0c4a6e',
+                lineHeight: '1.5'
+              }}
+              onFocus={(e) => {
+                e.target.style.borderColor = '#0ea5e9';
+                e.target.style.boxShadow = '0 0 0 3px rgba(14, 165, 233, 0.1)';
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = '#bae6fd';
+                e.target.style.boxShadow = 'none';
+              }}
+            />
+            <div style={{
+              display: 'flex',
+              gap: '0.75rem',
+              marginTop: '1rem'
+            }}>
+              <button
+                onClick={handleTextInput}
+                disabled={!textInput.trim()}
+                style={{
+                  flex: 1,
+                  background: textInput.trim() 
+                    ? 'linear-gradient(to right, #10b981, #059669)'
+                    : 'linear-gradient(to right, #9ca3af, #6b7280)',
+                  color: '#ffffff',
+                  padding: '0.75rem 1.5rem',
+                  borderRadius: '0.5rem',
+                  fontSize: '1rem',
+                  fontWeight: '600',
+                  border: 'none',
+                  cursor: textInput.trim() ? 'pointer' : 'not-allowed',
+                  transition: 'all 0.2s',
+                  opacity: textInput.trim() ? 1 : 0.6
+                }}
+                onMouseEnter={(e) => {
+                  if (textInput.trim()) {
+                    e.currentTarget.style.background = 'linear-gradient(to right, #059669, #047857)';
+                    e.currentTarget.style.transform = 'scale(1.02)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (textInput.trim()) {
+                    e.currentTarget.style.background = 'linear-gradient(to right, #10b981, #059669)';
+                    e.currentTarget.style.transform = 'scale(1)';
+                  }
+                }}
+              >
+                ✨ 교정하기
+              </button>
+              <button
+                onClick={() => setShowTextInput(false)}
+                style={{
+                  background: 'linear-gradient(to right, #6b7280, #4b5563)',
+                  color: '#ffffff',
+                  padding: '0.75rem 1.5rem',
+                  borderRadius: '0.5rem',
+                  fontSize: '1rem',
+                  fontWeight: '600',
+                  border: 'none',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'linear-gradient(to right, #4b5563, #374151)';
+                  e.currentTarget.style.transform = 'scale(1.02)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'linear-gradient(to right, #6b7280, #4b5563)';
+                  e.currentTarget.style.transform = 'scale(1)';
+                }}
+              >
+                취소
+              </button>
+            </div>
+          </div>
+        </motion.div>
+      )}
 
       {/* Permission Guide */}
       {(micState === 'denied' || micState === 'blocked') && (
